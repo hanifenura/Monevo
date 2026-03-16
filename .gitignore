@@ -1,0 +1,6 @@
+# env files
+.env
+.env.*
+env.ts
+backend/.env
+frontend/.env

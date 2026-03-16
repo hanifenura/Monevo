@@ -7,8 +7,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function ExploreScreen() {
+  const router = useRouter();
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -57,9 +60,9 @@ export default function ExploreScreen() {
 
             <TouchableOpacity style={styles.categoryCard}>
               <View style={[styles.categoryIcon, { backgroundColor: '#E5FFE5' }]}>
-                <Ionicons name="medkit-outline" size={32} color="#66BB6A" />
+                <Ionicons name="add-circle-outline" size={32} color="#66BB6A" />
               </View>
-              <Text style={styles.categoryName}>Sağlık</Text>
+              <Text style={styles.categoryName}>Diğer</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -67,6 +70,23 @@ export default function ExploreScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Öne Çıkanlar</Text>
           
+          {/* Test Button */}
+          {/* <TouchableOpacity 
+            style={[styles.featureCard, styles.testCard]}
+            onPress={() => router.push('/receipt/edit' as any)}
+          >
+            <View style={[styles.featureIcon, styles.testIcon]}>
+              <Ionicons name="create-outline" size={28} color="#FFA726" />
+            </View>
+            <View style={styles.featureContent}>
+              <Text style={styles.featureTitle}>🧪 Fiş Düzenle (Test)</Text>
+              <Text style={styles.featureDescription}>
+                Yeni fiş düzenleme sayfasını test edin
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color="#FFA726" />
+          </TouchableOpacity> */}
+
           <TouchableOpacity style={styles.featureCard}>
             <View style={styles.featureIcon}>
               <Ionicons name="people-outline" size={28} color="#59B1B1" />
@@ -222,6 +242,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#7C7C7C',
     lineHeight: 20,
+  },
+  testCard: {
+    borderWidth: 2,
+    borderColor: '#FFA726',
+    borderStyle: 'dashed',
+    backgroundColor: '#FFF5E5',
+  },
+  testIcon: {
+    backgroundColor: '#FFF5E5',
+    borderWidth: 2,
+    borderColor: '#FFA726',
   },
   tipCard: {
     backgroundColor: '#FFF8E5',

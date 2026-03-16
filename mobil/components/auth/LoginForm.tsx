@@ -22,7 +22,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
-  const [rememberMe, setRememberMe] = useState(false); // 🔹 Yeni state
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = () => {
     onSubmit(email, password, rememberMe);
@@ -62,7 +62,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         onBlur={() => setFocusedInput(null)}
       />
 
-      {/* Beni Hatırla ve Şifremi Unuttum satırı */}
+      {/* Beni Hatırla ve Şifremi Unuttum */}
       <View style={styles.rowBetween}>
         <View style={styles.rememberMeContainer}>
           <Switch
@@ -71,14 +71,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             trackColor={{ false: '#D0D0D0', true: '#59B1B1' }}
             thumbColor={rememberMe ? '#FFFFFF' : '#f4f3f4'}
           />
-          <Text style={styles.rememberMeText}>Beni hatırla</Text>
+          <Text style={styles.rememberMeText}>Hesabım açık kalsın</Text>
         </View>
 
-      {onForgotPassword && (
+        {onForgotPassword && (
           <TouchableOpacity onPress={onForgotPassword}>
-          <Text style={styles.forgotPasswordText}>Şifremi unuttum?</Text>
-        </TouchableOpacity>
-      )}
+            <Text style={styles.forgotPasswordText}>Şifremi unuttum?</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Login Button */}
@@ -139,7 +139,6 @@ const styles = StyleSheet.create({
   rememberMeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
   },
   rememberMeText: {
     color: '#2C2C2C',

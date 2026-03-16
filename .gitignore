@@ -6,3 +6,4 @@ backend/.env
 frontend/.env
 mobil/.env
 mobil/env.ts
+mobil/config/env.ts

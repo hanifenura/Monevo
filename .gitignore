@@ -4,3 +4,5 @@
 env.ts
 backend/.env
 frontend/.env
+mobil/.env
+mobil/env.ts

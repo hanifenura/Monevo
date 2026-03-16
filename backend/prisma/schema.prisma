@@ -85,10 +85,11 @@ model ListItem {
 
 model Receipt {
   receipt_id      Int       @id @default(autoincrement())
-  list_id         Int
+  list_id         Int?
   user_id         Int
   store_name      String?
   total_amount    Decimal?
+  subtotal        Decimal?
   receipt_date    DateTime?
   payment_method  PaymentMethod?
   tax_rate        Decimal?
@@ -98,18 +99,21 @@ model Receipt {
   ocr_text        String?
   processed       Boolean    @default(false)
   uploaded_at     DateTime   @default(now())
-  list            ShoppingList @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
+  list            ShoppingList? @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
   user            User       @relation(fields: [user_id], references: [user_id])
   items           ReceiptItem[]
 }
 
 model ReceiptItem {
-  id          Int       @id @default(autoincrement())
-  receiptId   Int
-  productName String
-  price       Decimal?
-  quantity    Int?
-  receipt     Receipt   @relation(fields: [receiptId], references: [receipt_id], onDelete: Cascade)
+  id            Int       @id @default(autoincrement())
+  receiptId     Int
+  productName   String
+  price         Decimal
+  quantity      Decimal   @default(1)
+  unit          String    @default("adet")
+  pricePerUnit  Decimal?
+  taxRate       Decimal?
+  receipt       Receipt   @relation(fields: [receiptId], references: [receipt_id], onDelete: Cascade)
 }
 
 model Expense {

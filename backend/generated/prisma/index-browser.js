@@ -174,6 +174,7 @@ exports.Prisma.ReceiptScalarFieldEnum = {
   user_id: 'user_id',
   store_name: 'store_name',
   total_amount: 'total_amount',
+  subtotal: 'subtotal',
   receipt_date: 'receipt_date',
   payment_method: 'payment_method',
   tax_rate: 'tax_rate',
@@ -190,7 +191,10 @@ exports.Prisma.ReceiptItemScalarFieldEnum = {
   receiptId: 'receiptId',
   productName: 'productName',
   price: 'price',
-  quantity: 'quantity'
+  quantity: 'quantity',
+  unit: 'unit',
+  pricePerUnit: 'pricePerUnit',
+  taxRate: 'taxRate'
 };
 
 exports.Prisma.ExpenseScalarFieldEnum = {

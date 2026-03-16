@@ -9,9 +9,8 @@ import {
 
 interface SignupFormProps {
   onSubmit: (data: {
-    fullName: string;
+    name: string;
     email: string;
-    username: string;
     password: string;
   }) => void;
   onNavigateToLogin?: () => void;
@@ -21,16 +20,15 @@ export const SignupForm: React.FC<SignupFormProps> = ({
   onSubmit,
   onNavigateToLogin,
 }) => {
-  const [fullName, setFullName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [focusedInput, setFocusedInput] = useState<string | null>(null); // 🔹 Focus durumu
+  const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
   const handleSubmit = () => {
     if (password === confirmPassword) {
-      onSubmit({ fullName, email, username, password });
+      onSubmit({ name, email, password });
     } else {
       alert('Şifreler eşleşmiyor!');
     }
@@ -38,18 +36,18 @@ export const SignupForm: React.FC<SignupFormProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Full Name Input */}
+      {/* Name Input */}
       <TextInput
         style={[
           styles.input,
-          focusedInput === 'fullName' && styles.inputFocused,
+          focusedInput === 'name' && styles.inputFocused,
         ]}
         placeholder="Ad Soyad"
         placeholderTextColor="#A0A0A0"
-        value={fullName}
-        onChangeText={setFullName}
+        value={name}
+        onChangeText={setName}
         autoCapitalize="words"
-        onFocus={() => setFocusedInput('fullName')}
+        onFocus={() => setFocusedInput('name')}
         onBlur={() => setFocusedInput(null)}
       />
 
@@ -69,28 +67,13 @@ export const SignupForm: React.FC<SignupFormProps> = ({
         onBlur={() => setFocusedInput(null)}
       />
 
-      {/* Username Input */}
-      <TextInput
-        style={[
-          styles.input,
-          focusedInput === 'username' && styles.inputFocused,
-        ]}
-        placeholder="Kullanıcı Adı"
-        placeholderTextColor="#A0A0A0"
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none"
-        onFocus={() => setFocusedInput('username')}
-        onBlur={() => setFocusedInput(null)}
-      />
-
       {/* Password Input */}
       <TextInput
         style={[
           styles.input,
           focusedInput === 'password' && styles.inputFocused,
         ]}
-        placeholder="Şifre"
+        placeholder="Şifre (en az 6 karakter)"
         placeholderTextColor="#A0A0A0"
         value={password}
         onChangeText={setPassword}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,18 +7,62 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
-  Image, 
+  Image,
+  Alert,
+  ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { LoginForm } from '@/components/auth/LoginForm';
+import { authService } from '@/services/api';
+import { useAuthStore } from '@/store/authStore';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { login } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [userName, setUserName] = useState('');
 
-  const handleLogin = async (email: string, password: string) => {
-    console.log('Login:', { email, password });
-    router.replace('/(tabs)');
+  const handleLogin = async (email: string, password: string, rememberMe: boolean) => {
+    // Basit validasyon
+    if (!email || !password) {
+      Alert.alert('Hata', 'Lütfen tüm alanları doldurun');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await authService.login({ email, password });
+      
+      if (response.success) {
+        // Token ve kullanıcı bilgisini store'a kaydet
+        await login(response.data.user, response.data.token, rememberMe);
+        
+        // Kullanıcı adını kaydet ve modal göster
+        setUserName(response.data.user.name);
+        setShowSuccessModal(true);
+        
+        // 2 saniye sonra ana sayfaya yönlendir
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          router.replace('/(tabs)');
+        }, 2000);
+      } else {
+        Alert.alert('Hata', response.message || 'Giriş başarısız');
+      }
+    } catch (error: any) {
+      console.error('Login hatası:', error);
+      
+      // Hata mesajını göster
+      const errorMessage = error?.response?.data?.message || 
+                          'Giriş yapılırken bir hata oluştu';
+      Alert.alert('Hata', errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -56,11 +100,31 @@ export default function LoginScreen() {
 
           <LoginForm
             onSubmit={handleLogin}
-            onForgotPassword={() => router.push('/auth/forgot-password' as any)}
+            onForgotPassword={() => Alert.alert('Bilgi', 'Şifre sıfırlama özelliği yakında eklenecek')}
             onNavigateToSignup={() => router.push('/auth/signup' as any)}
           />
+
+          {isLoading && (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator size="large" color="#59B1B1" />
+            </View>
+          )}
         </View>
       </ScrollView>
+
+      {/* Success Modal */}
+      <Modal
+        visible={showSuccessModal}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.successModalOverlay}>
+          <View style={styles.successModalContent}>
+            <Ionicons name="checkmark-circle" size={48} color="#4CAF50" />
+            <Text style={styles.successTitle}>Giriş Başarılı</Text>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -112,6 +176,42 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#7C7C7C',
     marginBottom: 40,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  },
+  successModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    gap: 12,
+  },
+  successTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2C2C2C',
   },
 });
 

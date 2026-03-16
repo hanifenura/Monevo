@@ -2,13 +2,16 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { useState, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text, Alert, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
   const [image, setImage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const cameraRef = useRef<any>(null);
+  const router = useRouter();
 
   if (!permission) {
     return <View />;
@@ -115,7 +118,7 @@ export default function App() {
       }
 
       console.log("OCR işlemi başlatılıyor...");
-      Alert.alert("İşleniyor", "Fiş okunuyor, lütfen bekleyin... (Bu işlem 1-2 dakika sürebilir)");
+      setIsProcessing(true);
 
       const formData = new FormData();
       
@@ -193,24 +196,23 @@ export default function App() {
         return;
       }
       
-      // Başarı mesajı göster
-      const itemsList = parsedReceipt.items
-        .map((item: any, i: number) => `${i+1}. ${item.productName}: ${item.quantity}x${item.price} = ${item.lineTotal} TL`)
-        .join('\n');
+      // Edit sayfasına yönlendir
+      console.log("📱 Edit sayfasına yönlendiriliyor...");
       
-      Alert.alert(
-        "✅ Parse Başarılı!", 
-        `📦 ${parsedReceipt.items.length} ürün bulundu\n💰 Toplam: ${parsedReceipt.total_amount || parsedReceipt.sub_total} TL\n🏪 ${parsedReceipt.store_name}\n\nÜrünler:\n${itemsList}\n\nBackend'e kaydedilsin mi?`,
-        [
-          { text: "Hayır", style: "cancel" },
-          { text: "Evet, Kaydet", onPress: async () => await saveToBackend(parsedReceipt) }
-        ]
-      );
+      // ParsedReceipt'i JSON string'e çevir (route params olarak göndermek için)
+      router.push({
+        pathname: '/receipt/edit',
+        params: {
+          ocrData: JSON.stringify(parsedReceipt)
+        }
+      });
   
     } catch (error) {
       console.error("❌ OCR/Parse hatası:", error);
       const errorMessage = error instanceof Error ? error.message : "Bilinmeyen hata oluştu";
       Alert.alert("Hata", errorMessage);
+    } finally {
+      setIsProcessing(false);
     }
   }
   
@@ -223,19 +225,19 @@ export default function App() {
       const payload = {
         user_id: 1,
         list_id: 1,
-        store_name: parsedReceipt.store_name,
-        total_amount: parsedReceipt.total_amount,
-        sub_total: parsedReceipt.sub_total,
-        tax_amount: parsedReceipt.tax_amount,
-        tax_rate: parsedReceipt.tax_rate,
-        receipt_date: parsedReceipt.receipt_date,
-        payment_method: parsedReceipt.payment_method,
+        store_name: parsedReceipt.storeName,
+        total_amount: parsedReceipt.totalAmount,
+        sub_total: parsedReceipt.subTotal,
+        tax_amount: parsedReceipt.taxAmount,
+        tax_rate: parsedReceipt.taxRate,
+        receipt_date: parsedReceipt.receiptDate,
+        payment_method: parsedReceipt.paymentMethod,
         currency: parsedReceipt.currency,
         items: parsedReceipt.items.map((item: any) => ({
           productName: item.productName,
           quantity: item.quantity,
-          unitPrice: item.price,
-          lineTotal: item.lineTotal || (item.price * item.quantity)
+          unitPrice: item.unitPrice,
+          lineTotal: item.lineTotal || (item.unitPrice * item.quantity)
         }))
       };
       
@@ -267,7 +269,7 @@ export default function App() {
       
       Alert.alert(
         "Başarılı! 🎉", 
-        `Fiş başarıyla kaydedildi!\n\n📦 ${parsedReceipt.items.length} ürün\n💰 Toplam: ${parsedReceipt.total_amount} TL\n🏪 ${parsedReceipt.store_name}`
+        `Fiş başarıyla kaydedildi!\n\n📦 ${parsedReceipt.items.length} ürün\n💰 Toplam: ${parsedReceipt.totalAmount} TL\n🏪 ${parsedReceipt.storeName}`
       );
     } catch (error) {
       console.error("❌ Backend kaydetme hatası:", error);
@@ -300,6 +302,27 @@ export default function App() {
           <Image source={{ uri: image }} style={styles.preview} />
         </View>
       )}
+
+      {/* 🔄 Loading Modal */}
+      <Modal
+        visible={isProcessing}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <ActivityIndicator size="large" color="#59B1B1" />
+            <Text style={styles.modalTitle}>Fiş İşleniyor</Text>
+            <Text style={styles.modalText}>
+              Fişiniz okunuyor, lütfen bekleyin...
+            </Text>
+            <View style={styles.modalInfo}>
+              <Ionicons name="time-outline" size={20} color="#7C7C7C" />
+              <Text style={styles.modalInfoText}>Bu işlem 1-2 dakika sürebilir</Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -358,5 +381,52 @@ const styles = StyleSheet.create({
   preview: {
     width: 100,
     height: 100,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 32,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    minWidth: 280,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C2C2C',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#7C7C7C',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  modalInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    gap: 8,
+  },
+  modalInfoText: {
+    fontSize: 14,
+    color: '#7C7C7C',
   },
 });

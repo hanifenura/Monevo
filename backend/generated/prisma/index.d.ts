@@ -58,6 +58,11 @@ export type Expense = $Result.DefaultSelection<Prisma.$ExpensePayload>
  * 
  */
 export type ShoppingListShare = $Result.DefaultSelection<Prisma.$ShoppingListSharePayload>
+/**
+ * Model ListInvitation
+ * 
+ */
+export type ListInvitation = $Result.DefaultSelection<Prisma.$ListInvitationPayload>
 
 /**
  * Enums
@@ -309,6 +314,16 @@ export class PrismaClient<
     * ```
     */
   get shoppingListShare(): Prisma.ShoppingListShareDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.listInvitation`: Exposes CRUD operations for the **ListInvitation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ListInvitations
+    * const listInvitations = await prisma.listInvitation.findMany()
+    * ```
+    */
+  get listInvitation(): Prisma.ListInvitationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -757,7 +772,8 @@ export namespace Prisma {
     Receipt: 'Receipt',
     ReceiptItem: 'ReceiptItem',
     Expense: 'Expense',
-    ShoppingListShare: 'ShoppingListShare'
+    ShoppingListShare: 'ShoppingListShare',
+    ListInvitation: 'ListInvitation'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -776,7 +792,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "shoppingList" | "userListAccess" | "category" | "listItem" | "receipt" | "receiptItem" | "expense" | "shoppingListShare"
+      modelProps: "user" | "shoppingList" | "userListAccess" | "category" | "listItem" | "receipt" | "receiptItem" | "expense" | "shoppingListShare" | "listInvitation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1446,6 +1462,80 @@ export namespace Prisma {
           }
         }
       }
+      ListInvitation: {
+        payload: Prisma.$ListInvitationPayload<ExtArgs>
+        fields: Prisma.ListInvitationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ListInvitationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ListInvitationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>
+          }
+          findFirst: {
+            args: Prisma.ListInvitationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ListInvitationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>
+          }
+          findMany: {
+            args: Prisma.ListInvitationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>[]
+          }
+          create: {
+            args: Prisma.ListInvitationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>
+          }
+          createMany: {
+            args: Prisma.ListInvitationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ListInvitationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>[]
+          }
+          delete: {
+            args: Prisma.ListInvitationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>
+          }
+          update: {
+            args: Prisma.ListInvitationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ListInvitationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ListInvitationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ListInvitationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>[]
+          }
+          upsert: {
+            args: Prisma.ListInvitationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ListInvitationPayload>
+          }
+          aggregate: {
+            args: Prisma.ListInvitationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateListInvitation>
+          }
+          groupBy: {
+            args: Prisma.ListInvitationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ListInvitationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ListInvitationCountArgs<ExtArgs>
+            result: $Utils.Optional<ListInvitationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1551,6 +1641,7 @@ export namespace Prisma {
     receiptItem?: ReceiptItemOmit
     expense?: ExpenseOmit
     shoppingListShare?: ShoppingListShareOmit
+    listInvitation?: ListInvitationOmit
   }
 
   /* Types for Logging */
@@ -1638,6 +1729,8 @@ export namespace Prisma {
     expenses: number
     checkedItems: number
     sharedLists: number
+    createdInvitations: number
+    usedInvitations: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1648,6 +1741,8 @@ export namespace Prisma {
     expenses?: boolean | UserCountOutputTypeCountExpensesArgs
     checkedItems?: boolean | UserCountOutputTypeCountCheckedItemsArgs
     sharedLists?: boolean | UserCountOutputTypeCountSharedListsArgs
+    createdInvitations?: boolean | UserCountOutputTypeCountCreatedInvitationsArgs
+    usedInvitations?: boolean | UserCountOutputTypeCountUsedInvitationsArgs
   }
 
   // Custom InputTypes
@@ -1710,6 +1805,20 @@ export namespace Prisma {
     where?: ShoppingListShareWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ListInvitationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUsedInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ListInvitationWhereInput
+  }
+
 
   /**
    * Count Type ShoppingListCountOutputType
@@ -1720,6 +1829,7 @@ export namespace Prisma {
     receipts: number
     accesses: number
     sharedWith: number
+    invitations: number
   }
 
   export type ShoppingListCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1727,6 +1837,7 @@ export namespace Prisma {
     receipts?: boolean | ShoppingListCountOutputTypeCountReceiptsArgs
     accesses?: boolean | ShoppingListCountOutputTypeCountAccessesArgs
     sharedWith?: boolean | ShoppingListCountOutputTypeCountSharedWithArgs
+    invitations?: boolean | ShoppingListCountOutputTypeCountInvitationsArgs
   }
 
   // Custom InputTypes
@@ -1766,6 +1877,13 @@ export namespace Prisma {
    */
   export type ShoppingListCountOutputTypeCountSharedWithArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ShoppingListShareWhereInput
+  }
+
+  /**
+   * ShoppingListCountOutputType without action
+   */
+  export type ShoppingListCountOutputTypeCountInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ListInvitationWhereInput
   }
 
 
@@ -2057,6 +2175,8 @@ export namespace Prisma {
     expenses?: boolean | User$expensesArgs<ExtArgs>
     checkedItems?: boolean | User$checkedItemsArgs<ExtArgs>
     sharedLists?: boolean | User$sharedListsArgs<ExtArgs>
+    createdInvitations?: boolean | User$createdInvitationsArgs<ExtArgs>
+    usedInvitations?: boolean | User$usedInvitationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2096,6 +2216,8 @@ export namespace Prisma {
     expenses?: boolean | User$expensesArgs<ExtArgs>
     checkedItems?: boolean | User$checkedItemsArgs<ExtArgs>
     sharedLists?: boolean | User$sharedListsArgs<ExtArgs>
+    createdInvitations?: boolean | User$createdInvitationsArgs<ExtArgs>
+    usedInvitations?: boolean | User$usedInvitationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2111,6 +2233,8 @@ export namespace Prisma {
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       checkedItems: Prisma.$ListItemPayload<ExtArgs>[]
       sharedLists: Prisma.$ShoppingListSharePayload<ExtArgs>[]
+      createdInvitations: Prisma.$ListInvitationPayload<ExtArgs>[]
+      usedInvitations: Prisma.$ListInvitationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       user_id: number
@@ -2520,6 +2644,8 @@ export namespace Prisma {
     expenses<T extends User$expensesArgs<ExtArgs> = {}>(args?: Subset<T, User$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     checkedItems<T extends User$checkedItemsArgs<ExtArgs> = {}>(args?: Subset<T, User$checkedItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sharedLists<T extends User$sharedListsArgs<ExtArgs> = {}>(args?: Subset<T, User$sharedListsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShoppingListSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdInvitations<T extends User$createdInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    usedInvitations<T extends User$usedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$usedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3111,6 +3237,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.createdInvitations
+   */
+  export type User$createdInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    where?: ListInvitationWhereInput
+    orderBy?: ListInvitationOrderByWithRelationInput | ListInvitationOrderByWithRelationInput[]
+    cursor?: ListInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ListInvitationScalarFieldEnum | ListInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * User.usedInvitations
+   */
+  export type User$usedInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    where?: ListInvitationWhereInput
+    orderBy?: ListInvitationOrderByWithRelationInput | ListInvitationOrderByWithRelationInput[]
+    cursor?: ListInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ListInvitationScalarFieldEnum | ListInvitationScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3344,6 +3518,7 @@ export namespace Prisma {
     receipts?: boolean | ShoppingList$receiptsArgs<ExtArgs>
     accesses?: boolean | ShoppingList$accessesArgs<ExtArgs>
     sharedWith?: boolean | ShoppingList$sharedWithArgs<ExtArgs>
+    invitations?: boolean | ShoppingList$invitationsArgs<ExtArgs>
     _count?: boolean | ShoppingListCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["shoppingList"]>
 
@@ -3383,6 +3558,7 @@ export namespace Prisma {
     receipts?: boolean | ShoppingList$receiptsArgs<ExtArgs>
     accesses?: boolean | ShoppingList$accessesArgs<ExtArgs>
     sharedWith?: boolean | ShoppingList$sharedWithArgs<ExtArgs>
+    invitations?: boolean | ShoppingList$invitationsArgs<ExtArgs>
     _count?: boolean | ShoppingListCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ShoppingListIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3400,6 +3576,7 @@ export namespace Prisma {
       receipts: Prisma.$ReceiptPayload<ExtArgs>[]
       accesses: Prisma.$UserListAccessPayload<ExtArgs>[]
       sharedWith: Prisma.$ShoppingListSharePayload<ExtArgs>[]
+      invitations: Prisma.$ListInvitationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       list_id: number
@@ -3807,6 +3984,7 @@ export namespace Prisma {
     receipts<T extends ShoppingList$receiptsArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingList$receiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accesses<T extends ShoppingList$accessesArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingList$accessesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserListAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sharedWith<T extends ShoppingList$sharedWithArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingList$sharedWithArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShoppingListSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invitations<T extends ShoppingList$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingList$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4331,6 +4509,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ShoppingListShareScalarFieldEnum | ShoppingListShareScalarFieldEnum[]
+  }
+
+  /**
+   * ShoppingList.invitations
+   */
+  export type ShoppingList$invitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    where?: ListInvitationWhereInput
+    orderBy?: ListInvitationOrderByWithRelationInput | ListInvitationOrderByWithRelationInput[]
+    cursor?: ListInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ListInvitationScalarFieldEnum | ListInvitationScalarFieldEnum[]
   }
 
   /**
@@ -12582,6 +12784,1244 @@ export namespace Prisma {
 
 
   /**
+   * Model ListInvitation
+   */
+
+  export type AggregateListInvitation = {
+    _count: ListInvitationCountAggregateOutputType | null
+    _avg: ListInvitationAvgAggregateOutputType | null
+    _sum: ListInvitationSumAggregateOutputType | null
+    _min: ListInvitationMinAggregateOutputType | null
+    _max: ListInvitationMaxAggregateOutputType | null
+  }
+
+  export type ListInvitationAvgAggregateOutputType = {
+    invitation_id: number | null
+    list_id: number | null
+    invited_by: number | null
+    used_by: number | null
+    max_uses: number | null
+    uses_count: number | null
+  }
+
+  export type ListInvitationSumAggregateOutputType = {
+    invitation_id: number | null
+    list_id: number | null
+    invited_by: number | null
+    used_by: number | null
+    max_uses: number | null
+    uses_count: number | null
+  }
+
+  export type ListInvitationMinAggregateOutputType = {
+    invitation_id: number | null
+    list_id: number | null
+    invited_by: number | null
+    invite_code: string | null
+    role: $Enums.Role | null
+    expires_at: Date | null
+    is_used: boolean | null
+    used_by: number | null
+    created_at: Date | null
+    used_at: Date | null
+    max_uses: number | null
+    uses_count: number | null
+  }
+
+  export type ListInvitationMaxAggregateOutputType = {
+    invitation_id: number | null
+    list_id: number | null
+    invited_by: number | null
+    invite_code: string | null
+    role: $Enums.Role | null
+    expires_at: Date | null
+    is_used: boolean | null
+    used_by: number | null
+    created_at: Date | null
+    used_at: Date | null
+    max_uses: number | null
+    uses_count: number | null
+  }
+
+  export type ListInvitationCountAggregateOutputType = {
+    invitation_id: number
+    list_id: number
+    invited_by: number
+    invite_code: number
+    role: number
+    expires_at: number
+    is_used: number
+    used_by: number
+    created_at: number
+    used_at: number
+    max_uses: number
+    uses_count: number
+    _all: number
+  }
+
+
+  export type ListInvitationAvgAggregateInputType = {
+    invitation_id?: true
+    list_id?: true
+    invited_by?: true
+    used_by?: true
+    max_uses?: true
+    uses_count?: true
+  }
+
+  export type ListInvitationSumAggregateInputType = {
+    invitation_id?: true
+    list_id?: true
+    invited_by?: true
+    used_by?: true
+    max_uses?: true
+    uses_count?: true
+  }
+
+  export type ListInvitationMinAggregateInputType = {
+    invitation_id?: true
+    list_id?: true
+    invited_by?: true
+    invite_code?: true
+    role?: true
+    expires_at?: true
+    is_used?: true
+    used_by?: true
+    created_at?: true
+    used_at?: true
+    max_uses?: true
+    uses_count?: true
+  }
+
+  export type ListInvitationMaxAggregateInputType = {
+    invitation_id?: true
+    list_id?: true
+    invited_by?: true
+    invite_code?: true
+    role?: true
+    expires_at?: true
+    is_used?: true
+    used_by?: true
+    created_at?: true
+    used_at?: true
+    max_uses?: true
+    uses_count?: true
+  }
+
+  export type ListInvitationCountAggregateInputType = {
+    invitation_id?: true
+    list_id?: true
+    invited_by?: true
+    invite_code?: true
+    role?: true
+    expires_at?: true
+    is_used?: true
+    used_by?: true
+    created_at?: true
+    used_at?: true
+    max_uses?: true
+    uses_count?: true
+    _all?: true
+  }
+
+  export type ListInvitationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ListInvitation to aggregate.
+     */
+    where?: ListInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ListInvitations to fetch.
+     */
+    orderBy?: ListInvitationOrderByWithRelationInput | ListInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ListInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ListInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ListInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ListInvitations
+    **/
+    _count?: true | ListInvitationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ListInvitationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ListInvitationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ListInvitationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ListInvitationMaxAggregateInputType
+  }
+
+  export type GetListInvitationAggregateType<T extends ListInvitationAggregateArgs> = {
+        [P in keyof T & keyof AggregateListInvitation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateListInvitation[P]>
+      : GetScalarType<T[P], AggregateListInvitation[P]>
+  }
+
+
+
+
+  export type ListInvitationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ListInvitationWhereInput
+    orderBy?: ListInvitationOrderByWithAggregationInput | ListInvitationOrderByWithAggregationInput[]
+    by: ListInvitationScalarFieldEnum[] | ListInvitationScalarFieldEnum
+    having?: ListInvitationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ListInvitationCountAggregateInputType | true
+    _avg?: ListInvitationAvgAggregateInputType
+    _sum?: ListInvitationSumAggregateInputType
+    _min?: ListInvitationMinAggregateInputType
+    _max?: ListInvitationMaxAggregateInputType
+  }
+
+  export type ListInvitationGroupByOutputType = {
+    invitation_id: number
+    list_id: number
+    invited_by: number
+    invite_code: string
+    role: $Enums.Role
+    expires_at: Date
+    is_used: boolean
+    used_by: number | null
+    created_at: Date
+    used_at: Date | null
+    max_uses: number
+    uses_count: number
+    _count: ListInvitationCountAggregateOutputType | null
+    _avg: ListInvitationAvgAggregateOutputType | null
+    _sum: ListInvitationSumAggregateOutputType | null
+    _min: ListInvitationMinAggregateOutputType | null
+    _max: ListInvitationMaxAggregateOutputType | null
+  }
+
+  type GetListInvitationGroupByPayload<T extends ListInvitationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ListInvitationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ListInvitationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ListInvitationGroupByOutputType[P]>
+            : GetScalarType<T[P], ListInvitationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ListInvitationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    invitation_id?: boolean
+    list_id?: boolean
+    invited_by?: boolean
+    invite_code?: boolean
+    role?: boolean
+    expires_at?: boolean
+    is_used?: boolean
+    used_by?: boolean
+    created_at?: boolean
+    used_at?: boolean
+    max_uses?: boolean
+    uses_count?: boolean
+    list?: boolean | ShoppingListDefaultArgs<ExtArgs>
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    usedByUser?: boolean | ListInvitation$usedByUserArgs<ExtArgs>
+  }, ExtArgs["result"]["listInvitation"]>
+
+  export type ListInvitationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    invitation_id?: boolean
+    list_id?: boolean
+    invited_by?: boolean
+    invite_code?: boolean
+    role?: boolean
+    expires_at?: boolean
+    is_used?: boolean
+    used_by?: boolean
+    created_at?: boolean
+    used_at?: boolean
+    max_uses?: boolean
+    uses_count?: boolean
+    list?: boolean | ShoppingListDefaultArgs<ExtArgs>
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    usedByUser?: boolean | ListInvitation$usedByUserArgs<ExtArgs>
+  }, ExtArgs["result"]["listInvitation"]>
+
+  export type ListInvitationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    invitation_id?: boolean
+    list_id?: boolean
+    invited_by?: boolean
+    invite_code?: boolean
+    role?: boolean
+    expires_at?: boolean
+    is_used?: boolean
+    used_by?: boolean
+    created_at?: boolean
+    used_at?: boolean
+    max_uses?: boolean
+    uses_count?: boolean
+    list?: boolean | ShoppingListDefaultArgs<ExtArgs>
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    usedByUser?: boolean | ListInvitation$usedByUserArgs<ExtArgs>
+  }, ExtArgs["result"]["listInvitation"]>
+
+  export type ListInvitationSelectScalar = {
+    invitation_id?: boolean
+    list_id?: boolean
+    invited_by?: boolean
+    invite_code?: boolean
+    role?: boolean
+    expires_at?: boolean
+    is_used?: boolean
+    used_by?: boolean
+    created_at?: boolean
+    used_at?: boolean
+    max_uses?: boolean
+    uses_count?: boolean
+  }
+
+  export type ListInvitationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"invitation_id" | "list_id" | "invited_by" | "invite_code" | "role" | "expires_at" | "is_used" | "used_by" | "created_at" | "used_at" | "max_uses" | "uses_count", ExtArgs["result"]["listInvitation"]>
+  export type ListInvitationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    list?: boolean | ShoppingListDefaultArgs<ExtArgs>
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    usedByUser?: boolean | ListInvitation$usedByUserArgs<ExtArgs>
+  }
+  export type ListInvitationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    list?: boolean | ShoppingListDefaultArgs<ExtArgs>
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    usedByUser?: boolean | ListInvitation$usedByUserArgs<ExtArgs>
+  }
+  export type ListInvitationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    list?: boolean | ShoppingListDefaultArgs<ExtArgs>
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    usedByUser?: boolean | ListInvitation$usedByUserArgs<ExtArgs>
+  }
+
+  export type $ListInvitationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ListInvitation"
+    objects: {
+      list: Prisma.$ShoppingListPayload<ExtArgs>
+      inviter: Prisma.$UserPayload<ExtArgs>
+      usedByUser: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      invitation_id: number
+      list_id: number
+      invited_by: number
+      invite_code: string
+      role: $Enums.Role
+      expires_at: Date
+      is_used: boolean
+      used_by: number | null
+      created_at: Date
+      used_at: Date | null
+      max_uses: number
+      uses_count: number
+    }, ExtArgs["result"]["listInvitation"]>
+    composites: {}
+  }
+
+  type ListInvitationGetPayload<S extends boolean | null | undefined | ListInvitationDefaultArgs> = $Result.GetResult<Prisma.$ListInvitationPayload, S>
+
+  type ListInvitationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ListInvitationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ListInvitationCountAggregateInputType | true
+    }
+
+  export interface ListInvitationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ListInvitation'], meta: { name: 'ListInvitation' } }
+    /**
+     * Find zero or one ListInvitation that matches the filter.
+     * @param {ListInvitationFindUniqueArgs} args - Arguments to find a ListInvitation
+     * @example
+     * // Get one ListInvitation
+     * const listInvitation = await prisma.listInvitation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ListInvitationFindUniqueArgs>(args: SelectSubset<T, ListInvitationFindUniqueArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ListInvitation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ListInvitationFindUniqueOrThrowArgs} args - Arguments to find a ListInvitation
+     * @example
+     * // Get one ListInvitation
+     * const listInvitation = await prisma.listInvitation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ListInvitationFindUniqueOrThrowArgs>(args: SelectSubset<T, ListInvitationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ListInvitation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ListInvitationFindFirstArgs} args - Arguments to find a ListInvitation
+     * @example
+     * // Get one ListInvitation
+     * const listInvitation = await prisma.listInvitation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ListInvitationFindFirstArgs>(args?: SelectSubset<T, ListInvitationFindFirstArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ListInvitation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ListInvitationFindFirstOrThrowArgs} args - Arguments to find a ListInvitation
+     * @example
+     * // Get one ListInvitation
+     * const listInvitation = await prisma.listInvitation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ListInvitationFindFirstOrThrowArgs>(args?: SelectSubset<T, ListInvitationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ListInvitations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ListInvitationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ListInvitations
+     * const listInvitations = await prisma.listInvitation.findMany()
+     * 
+     * // Get first 10 ListInvitations
+     * const listInvitations = await prisma.listInvitation.findMany({ take: 10 })
+     * 
+     * // Only select the `invitation_id`
+     * const listInvitationWithInvitation_idOnly = await prisma.listInvitation.findMany({ select: { invitation_id: true } })
+     * 
+     */
+    findMany<T extends ListInvitationFindManyArgs>(args?: SelectSubset<T, ListInvitationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ListInvitation.
+     * @param {ListInvitationCreateArgs} args - Arguments to create a ListInvitation.
+     * @example
+     * // Create one ListInvitation
+     * const ListInvitation = await prisma.listInvitation.create({
+     *   data: {
+     *     // ... data to create a ListInvitation
+     *   }
+     * })
+     * 
+     */
+    create<T extends ListInvitationCreateArgs>(args: SelectSubset<T, ListInvitationCreateArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ListInvitations.
+     * @param {ListInvitationCreateManyArgs} args - Arguments to create many ListInvitations.
+     * @example
+     * // Create many ListInvitations
+     * const listInvitation = await prisma.listInvitation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ListInvitationCreateManyArgs>(args?: SelectSubset<T, ListInvitationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ListInvitations and returns the data saved in the database.
+     * @param {ListInvitationCreateManyAndReturnArgs} args - Arguments to create many ListInvitations.
+     * @example
+     * // Create many ListInvitations
+     * const listInvitation = await prisma.listInvitation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ListInvitations and only return the `invitation_id`
+     * const listInvitationWithInvitation_idOnly = await prisma.listInvitation.createManyAndReturn({
+     *   select: { invitation_id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ListInvitationCreateManyAndReturnArgs>(args?: SelectSubset<T, ListInvitationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ListInvitation.
+     * @param {ListInvitationDeleteArgs} args - Arguments to delete one ListInvitation.
+     * @example
+     * // Delete one ListInvitation
+     * const ListInvitation = await prisma.listInvitation.delete({
+     *   where: {
+     *     // ... filter to delete one ListInvitation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ListInvitationDeleteArgs>(args: SelectSubset<T, ListInvitationDeleteArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ListInvitation.
+     * @param {ListInvitationUpdateArgs} args - Arguments to update one ListInvitation.
+     * @example
+     * // Update one ListInvitation
+     * const listInvitation = await prisma.listInvitation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ListInvitationUpdateArgs>(args: SelectSubset<T, ListInvitationUpdateArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ListInvitations.
+     * @param {ListInvitationDeleteManyArgs} args - Arguments to filter ListInvitations to delete.
+     * @example
+     * // Delete a few ListInvitations
+     * const { count } = await prisma.listInvitation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ListInvitationDeleteManyArgs>(args?: SelectSubset<T, ListInvitationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ListInvitations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ListInvitationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ListInvitations
+     * const listInvitation = await prisma.listInvitation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ListInvitationUpdateManyArgs>(args: SelectSubset<T, ListInvitationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ListInvitations and returns the data updated in the database.
+     * @param {ListInvitationUpdateManyAndReturnArgs} args - Arguments to update many ListInvitations.
+     * @example
+     * // Update many ListInvitations
+     * const listInvitation = await prisma.listInvitation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ListInvitations and only return the `invitation_id`
+     * const listInvitationWithInvitation_idOnly = await prisma.listInvitation.updateManyAndReturn({
+     *   select: { invitation_id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ListInvitationUpdateManyAndReturnArgs>(args: SelectSubset<T, ListInvitationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ListInvitation.
+     * @param {ListInvitationUpsertArgs} args - Arguments to update or create a ListInvitation.
+     * @example
+     * // Update or create a ListInvitation
+     * const listInvitation = await prisma.listInvitation.upsert({
+     *   create: {
+     *     // ... data to create a ListInvitation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ListInvitation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ListInvitationUpsertArgs>(args: SelectSubset<T, ListInvitationUpsertArgs<ExtArgs>>): Prisma__ListInvitationClient<$Result.GetResult<Prisma.$ListInvitationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ListInvitations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ListInvitationCountArgs} args - Arguments to filter ListInvitations to count.
+     * @example
+     * // Count the number of ListInvitations
+     * const count = await prisma.listInvitation.count({
+     *   where: {
+     *     // ... the filter for the ListInvitations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ListInvitationCountArgs>(
+      args?: Subset<T, ListInvitationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ListInvitationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ListInvitation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ListInvitationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ListInvitationAggregateArgs>(args: Subset<T, ListInvitationAggregateArgs>): Prisma.PrismaPromise<GetListInvitationAggregateType<T>>
+
+    /**
+     * Group by ListInvitation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ListInvitationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ListInvitationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ListInvitationGroupByArgs['orderBy'] }
+        : { orderBy?: ListInvitationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ListInvitationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetListInvitationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ListInvitation model
+   */
+  readonly fields: ListInvitationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ListInvitation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ListInvitationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    list<T extends ShoppingListDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingListDefaultArgs<ExtArgs>>): Prisma__ShoppingListClient<$Result.GetResult<Prisma.$ShoppingListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    inviter<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    usedByUser<T extends ListInvitation$usedByUserArgs<ExtArgs> = {}>(args?: Subset<T, ListInvitation$usedByUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ListInvitation model
+   */
+  interface ListInvitationFieldRefs {
+    readonly invitation_id: FieldRef<"ListInvitation", 'Int'>
+    readonly list_id: FieldRef<"ListInvitation", 'Int'>
+    readonly invited_by: FieldRef<"ListInvitation", 'Int'>
+    readonly invite_code: FieldRef<"ListInvitation", 'String'>
+    readonly role: FieldRef<"ListInvitation", 'Role'>
+    readonly expires_at: FieldRef<"ListInvitation", 'DateTime'>
+    readonly is_used: FieldRef<"ListInvitation", 'Boolean'>
+    readonly used_by: FieldRef<"ListInvitation", 'Int'>
+    readonly created_at: FieldRef<"ListInvitation", 'DateTime'>
+    readonly used_at: FieldRef<"ListInvitation", 'DateTime'>
+    readonly max_uses: FieldRef<"ListInvitation", 'Int'>
+    readonly uses_count: FieldRef<"ListInvitation", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ListInvitation findUnique
+   */
+  export type ListInvitationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ListInvitation to fetch.
+     */
+    where: ListInvitationWhereUniqueInput
+  }
+
+  /**
+   * ListInvitation findUniqueOrThrow
+   */
+  export type ListInvitationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ListInvitation to fetch.
+     */
+    where: ListInvitationWhereUniqueInput
+  }
+
+  /**
+   * ListInvitation findFirst
+   */
+  export type ListInvitationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ListInvitation to fetch.
+     */
+    where?: ListInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ListInvitations to fetch.
+     */
+    orderBy?: ListInvitationOrderByWithRelationInput | ListInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ListInvitations.
+     */
+    cursor?: ListInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ListInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ListInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ListInvitations.
+     */
+    distinct?: ListInvitationScalarFieldEnum | ListInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * ListInvitation findFirstOrThrow
+   */
+  export type ListInvitationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ListInvitation to fetch.
+     */
+    where?: ListInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ListInvitations to fetch.
+     */
+    orderBy?: ListInvitationOrderByWithRelationInput | ListInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ListInvitations.
+     */
+    cursor?: ListInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ListInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ListInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ListInvitations.
+     */
+    distinct?: ListInvitationScalarFieldEnum | ListInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * ListInvitation findMany
+   */
+  export type ListInvitationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ListInvitations to fetch.
+     */
+    where?: ListInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ListInvitations to fetch.
+     */
+    orderBy?: ListInvitationOrderByWithRelationInput | ListInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ListInvitations.
+     */
+    cursor?: ListInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ListInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ListInvitations.
+     */
+    skip?: number
+    distinct?: ListInvitationScalarFieldEnum | ListInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * ListInvitation create
+   */
+  export type ListInvitationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ListInvitation.
+     */
+    data: XOR<ListInvitationCreateInput, ListInvitationUncheckedCreateInput>
+  }
+
+  /**
+   * ListInvitation createMany
+   */
+  export type ListInvitationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ListInvitations.
+     */
+    data: ListInvitationCreateManyInput | ListInvitationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ListInvitation createManyAndReturn
+   */
+  export type ListInvitationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * The data used to create many ListInvitations.
+     */
+    data: ListInvitationCreateManyInput | ListInvitationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ListInvitation update
+   */
+  export type ListInvitationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ListInvitation.
+     */
+    data: XOR<ListInvitationUpdateInput, ListInvitationUncheckedUpdateInput>
+    /**
+     * Choose, which ListInvitation to update.
+     */
+    where: ListInvitationWhereUniqueInput
+  }
+
+  /**
+   * ListInvitation updateMany
+   */
+  export type ListInvitationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ListInvitations.
+     */
+    data: XOR<ListInvitationUpdateManyMutationInput, ListInvitationUncheckedUpdateManyInput>
+    /**
+     * Filter which ListInvitations to update
+     */
+    where?: ListInvitationWhereInput
+    /**
+     * Limit how many ListInvitations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ListInvitation updateManyAndReturn
+   */
+  export type ListInvitationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * The data used to update ListInvitations.
+     */
+    data: XOR<ListInvitationUpdateManyMutationInput, ListInvitationUncheckedUpdateManyInput>
+    /**
+     * Filter which ListInvitations to update
+     */
+    where?: ListInvitationWhereInput
+    /**
+     * Limit how many ListInvitations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ListInvitation upsert
+   */
+  export type ListInvitationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ListInvitation to update in case it exists.
+     */
+    where: ListInvitationWhereUniqueInput
+    /**
+     * In case the ListInvitation found by the `where` argument doesn't exist, create a new ListInvitation with this data.
+     */
+    create: XOR<ListInvitationCreateInput, ListInvitationUncheckedCreateInput>
+    /**
+     * In case the ListInvitation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ListInvitationUpdateInput, ListInvitationUncheckedUpdateInput>
+  }
+
+  /**
+   * ListInvitation delete
+   */
+  export type ListInvitationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+    /**
+     * Filter which ListInvitation to delete.
+     */
+    where: ListInvitationWhereUniqueInput
+  }
+
+  /**
+   * ListInvitation deleteMany
+   */
+  export type ListInvitationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ListInvitations to delete
+     */
+    where?: ListInvitationWhereInput
+    /**
+     * Limit how many ListInvitations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ListInvitation.usedByUser
+   */
+  export type ListInvitation$usedByUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ListInvitation without action
+   */
+  export type ListInvitationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ListInvitation
+     */
+    select?: ListInvitationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ListInvitation
+     */
+    omit?: ListInvitationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListInvitationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -12714,6 +14154,24 @@ export namespace Prisma {
   };
 
   export type ShoppingListShareScalarFieldEnum = (typeof ShoppingListShareScalarFieldEnum)[keyof typeof ShoppingListShareScalarFieldEnum]
+
+
+  export const ListInvitationScalarFieldEnum: {
+    invitation_id: 'invitation_id',
+    list_id: 'list_id',
+    invited_by: 'invited_by',
+    invite_code: 'invite_code',
+    role: 'role',
+    expires_at: 'expires_at',
+    is_used: 'is_used',
+    used_by: 'used_by',
+    created_at: 'created_at',
+    used_at: 'used_at',
+    max_uses: 'max_uses',
+    uses_count: 'uses_count'
+  };
+
+  export type ListInvitationScalarFieldEnum = (typeof ListInvitationScalarFieldEnum)[keyof typeof ListInvitationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12884,6 +14342,8 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     checkedItems?: ListItemListRelationFilter
     sharedLists?: ShoppingListShareListRelationFilter
+    createdInvitations?: ListInvitationListRelationFilter
+    usedInvitations?: ListInvitationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -12900,6 +14360,8 @@ export namespace Prisma {
     expenses?: ExpenseOrderByRelationAggregateInput
     checkedItems?: ListItemOrderByRelationAggregateInput
     sharedLists?: ShoppingListShareOrderByRelationAggregateInput
+    createdInvitations?: ListInvitationOrderByRelationAggregateInput
+    usedInvitations?: ListInvitationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -12919,6 +14381,8 @@ export namespace Prisma {
     expenses?: ExpenseListRelationFilter
     checkedItems?: ListItemListRelationFilter
     sharedLists?: ShoppingListShareListRelationFilter
+    createdInvitations?: ListInvitationListRelationFilter
+    usedInvitations?: ListInvitationListRelationFilter
   }, "user_id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -12962,6 +14426,7 @@ export namespace Prisma {
     receipts?: ReceiptListRelationFilter
     accesses?: UserListAccessListRelationFilter
     sharedWith?: ShoppingListShareListRelationFilter
+    invitations?: ListInvitationListRelationFilter
   }
 
   export type ShoppingListOrderByWithRelationInput = {
@@ -12976,6 +14441,7 @@ export namespace Prisma {
     receipts?: ReceiptOrderByRelationAggregateInput
     accesses?: UserListAccessOrderByRelationAggregateInput
     sharedWith?: ShoppingListShareOrderByRelationAggregateInput
+    invitations?: ListInvitationOrderByRelationAggregateInput
   }
 
   export type ShoppingListWhereUniqueInput = Prisma.AtLeast<{
@@ -12993,6 +14459,7 @@ export namespace Prisma {
     receipts?: ReceiptListRelationFilter
     accesses?: UserListAccessListRelationFilter
     sharedWith?: ShoppingListShareListRelationFilter
+    invitations?: ListInvitationListRelationFilter
   }, "list_id">
 
   export type ShoppingListOrderByWithAggregationInput = {
@@ -13550,6 +15017,104 @@ export namespace Prisma {
     role?: EnumRoleWithAggregatesFilter<"ShoppingListShare"> | $Enums.Role
   }
 
+  export type ListInvitationWhereInput = {
+    AND?: ListInvitationWhereInput | ListInvitationWhereInput[]
+    OR?: ListInvitationWhereInput[]
+    NOT?: ListInvitationWhereInput | ListInvitationWhereInput[]
+    invitation_id?: IntFilter<"ListInvitation"> | number
+    list_id?: IntFilter<"ListInvitation"> | number
+    invited_by?: IntFilter<"ListInvitation"> | number
+    invite_code?: StringFilter<"ListInvitation"> | string
+    role?: EnumRoleFilter<"ListInvitation"> | $Enums.Role
+    expires_at?: DateTimeFilter<"ListInvitation"> | Date | string
+    is_used?: BoolFilter<"ListInvitation"> | boolean
+    used_by?: IntNullableFilter<"ListInvitation"> | number | null
+    created_at?: DateTimeFilter<"ListInvitation"> | Date | string
+    used_at?: DateTimeNullableFilter<"ListInvitation"> | Date | string | null
+    max_uses?: IntFilter<"ListInvitation"> | number
+    uses_count?: IntFilter<"ListInvitation"> | number
+    list?: XOR<ShoppingListScalarRelationFilter, ShoppingListWhereInput>
+    inviter?: XOR<UserScalarRelationFilter, UserWhereInput>
+    usedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type ListInvitationOrderByWithRelationInput = {
+    invitation_id?: SortOrder
+    list_id?: SortOrder
+    invited_by?: SortOrder
+    invite_code?: SortOrder
+    role?: SortOrder
+    expires_at?: SortOrder
+    is_used?: SortOrder
+    used_by?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    used_at?: SortOrderInput | SortOrder
+    max_uses?: SortOrder
+    uses_count?: SortOrder
+    list?: ShoppingListOrderByWithRelationInput
+    inviter?: UserOrderByWithRelationInput
+    usedByUser?: UserOrderByWithRelationInput
+  }
+
+  export type ListInvitationWhereUniqueInput = Prisma.AtLeast<{
+    invitation_id?: number
+    invite_code?: string
+    AND?: ListInvitationWhereInput | ListInvitationWhereInput[]
+    OR?: ListInvitationWhereInput[]
+    NOT?: ListInvitationWhereInput | ListInvitationWhereInput[]
+    list_id?: IntFilter<"ListInvitation"> | number
+    invited_by?: IntFilter<"ListInvitation"> | number
+    role?: EnumRoleFilter<"ListInvitation"> | $Enums.Role
+    expires_at?: DateTimeFilter<"ListInvitation"> | Date | string
+    is_used?: BoolFilter<"ListInvitation"> | boolean
+    used_by?: IntNullableFilter<"ListInvitation"> | number | null
+    created_at?: DateTimeFilter<"ListInvitation"> | Date | string
+    used_at?: DateTimeNullableFilter<"ListInvitation"> | Date | string | null
+    max_uses?: IntFilter<"ListInvitation"> | number
+    uses_count?: IntFilter<"ListInvitation"> | number
+    list?: XOR<ShoppingListScalarRelationFilter, ShoppingListWhereInput>
+    inviter?: XOR<UserScalarRelationFilter, UserWhereInput>
+    usedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "invitation_id" | "invite_code">
+
+  export type ListInvitationOrderByWithAggregationInput = {
+    invitation_id?: SortOrder
+    list_id?: SortOrder
+    invited_by?: SortOrder
+    invite_code?: SortOrder
+    role?: SortOrder
+    expires_at?: SortOrder
+    is_used?: SortOrder
+    used_by?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    used_at?: SortOrderInput | SortOrder
+    max_uses?: SortOrder
+    uses_count?: SortOrder
+    _count?: ListInvitationCountOrderByAggregateInput
+    _avg?: ListInvitationAvgOrderByAggregateInput
+    _max?: ListInvitationMaxOrderByAggregateInput
+    _min?: ListInvitationMinOrderByAggregateInput
+    _sum?: ListInvitationSumOrderByAggregateInput
+  }
+
+  export type ListInvitationScalarWhereWithAggregatesInput = {
+    AND?: ListInvitationScalarWhereWithAggregatesInput | ListInvitationScalarWhereWithAggregatesInput[]
+    OR?: ListInvitationScalarWhereWithAggregatesInput[]
+    NOT?: ListInvitationScalarWhereWithAggregatesInput | ListInvitationScalarWhereWithAggregatesInput[]
+    invitation_id?: IntWithAggregatesFilter<"ListInvitation"> | number
+    list_id?: IntWithAggregatesFilter<"ListInvitation"> | number
+    invited_by?: IntWithAggregatesFilter<"ListInvitation"> | number
+    invite_code?: StringWithAggregatesFilter<"ListInvitation"> | string
+    role?: EnumRoleWithAggregatesFilter<"ListInvitation"> | $Enums.Role
+    expires_at?: DateTimeWithAggregatesFilter<"ListInvitation"> | Date | string
+    is_used?: BoolWithAggregatesFilter<"ListInvitation"> | boolean
+    used_by?: IntNullableWithAggregatesFilter<"ListInvitation"> | number | null
+    created_at?: DateTimeWithAggregatesFilter<"ListInvitation"> | Date | string
+    used_at?: DateTimeNullableWithAggregatesFilter<"ListInvitation"> | Date | string | null
+    max_uses?: IntWithAggregatesFilter<"ListInvitation"> | number
+    uses_count?: IntWithAggregatesFilter<"ListInvitation"> | number
+  }
+
   export type UserCreateInput = {
     name: string
     email: string
@@ -13563,6 +15128,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -13579,6 +15146,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUpdateInput = {
@@ -13594,6 +15163,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -13610,6 +15181,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -13648,6 +15221,7 @@ export namespace Prisma {
     receipts?: ReceiptCreateNestedManyWithoutListInput
     accesses?: UserListAccessCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareCreateNestedManyWithoutListInput
+    invitations?: ListInvitationCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListUncheckedCreateInput = {
@@ -13661,6 +15235,7 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedCreateNestedManyWithoutListInput
     accesses?: UserListAccessUncheckedCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareUncheckedCreateNestedManyWithoutListInput
+    invitations?: ListInvitationUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListUpdateInput = {
@@ -13673,6 +15248,7 @@ export namespace Prisma {
     receipts?: ReceiptUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListUncheckedUpdateInput = {
@@ -13686,6 +15262,7 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUncheckedUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUncheckedUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListCreateManyInput = {
@@ -14223,6 +15800,105 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
+  export type ListInvitationCreateInput = {
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+    list: ShoppingListCreateNestedOneWithoutInvitationsInput
+    inviter: UserCreateNestedOneWithoutCreatedInvitationsInput
+    usedByUser?: UserCreateNestedOneWithoutUsedInvitationsInput
+  }
+
+  export type ListInvitationUncheckedCreateInput = {
+    invitation_id?: number
+    list_id: number
+    invited_by: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    used_by?: number | null
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+  }
+
+  export type ListInvitationUpdateInput = {
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+    list?: ShoppingListUpdateOneRequiredWithoutInvitationsNestedInput
+    inviter?: UserUpdateOneRequiredWithoutCreatedInvitationsNestedInput
+    usedByUser?: UserUpdateOneWithoutUsedInvitationsNestedInput
+  }
+
+  export type ListInvitationUncheckedUpdateInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    list_id?: IntFieldUpdateOperationsInput | number
+    invited_by?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    used_by?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ListInvitationCreateManyInput = {
+    invitation_id?: number
+    list_id: number
+    invited_by: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    used_by?: number | null
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+  }
+
+  export type ListInvitationUpdateManyMutationInput = {
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ListInvitationUncheckedUpdateManyInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    list_id?: IntFieldUpdateOperationsInput | number
+    invited_by?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    used_by?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -14296,6 +15972,12 @@ export namespace Prisma {
     none?: ShoppingListShareWhereInput
   }
 
+  export type ListInvitationListRelationFilter = {
+    every?: ListInvitationWhereInput
+    some?: ListInvitationWhereInput
+    none?: ListInvitationWhereInput
+  }
+
   export type ShoppingListOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -14317,6 +15999,10 @@ export namespace Prisma {
   }
 
   export type ShoppingListShareOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ListInvitationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15041,6 +16727,69 @@ export namespace Prisma {
     user_id?: SortOrder
   }
 
+  export type ListInvitationCountOrderByAggregateInput = {
+    invitation_id?: SortOrder
+    list_id?: SortOrder
+    invited_by?: SortOrder
+    invite_code?: SortOrder
+    role?: SortOrder
+    expires_at?: SortOrder
+    is_used?: SortOrder
+    used_by?: SortOrder
+    created_at?: SortOrder
+    used_at?: SortOrder
+    max_uses?: SortOrder
+    uses_count?: SortOrder
+  }
+
+  export type ListInvitationAvgOrderByAggregateInput = {
+    invitation_id?: SortOrder
+    list_id?: SortOrder
+    invited_by?: SortOrder
+    used_by?: SortOrder
+    max_uses?: SortOrder
+    uses_count?: SortOrder
+  }
+
+  export type ListInvitationMaxOrderByAggregateInput = {
+    invitation_id?: SortOrder
+    list_id?: SortOrder
+    invited_by?: SortOrder
+    invite_code?: SortOrder
+    role?: SortOrder
+    expires_at?: SortOrder
+    is_used?: SortOrder
+    used_by?: SortOrder
+    created_at?: SortOrder
+    used_at?: SortOrder
+    max_uses?: SortOrder
+    uses_count?: SortOrder
+  }
+
+  export type ListInvitationMinOrderByAggregateInput = {
+    invitation_id?: SortOrder
+    list_id?: SortOrder
+    invited_by?: SortOrder
+    invite_code?: SortOrder
+    role?: SortOrder
+    expires_at?: SortOrder
+    is_used?: SortOrder
+    used_by?: SortOrder
+    created_at?: SortOrder
+    used_at?: SortOrder
+    max_uses?: SortOrder
+    uses_count?: SortOrder
+  }
+
+  export type ListInvitationSumOrderByAggregateInput = {
+    invitation_id?: SortOrder
+    list_id?: SortOrder
+    invited_by?: SortOrder
+    used_by?: SortOrder
+    max_uses?: SortOrder
+    uses_count?: SortOrder
+  }
+
   export type ShoppingListCreateNestedManyWithoutOwnerInput = {
     create?: XOR<ShoppingListCreateWithoutOwnerInput, ShoppingListUncheckedCreateWithoutOwnerInput> | ShoppingListCreateWithoutOwnerInput[] | ShoppingListUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: ShoppingListCreateOrConnectWithoutOwnerInput | ShoppingListCreateOrConnectWithoutOwnerInput[]
@@ -15090,6 +16839,20 @@ export namespace Prisma {
     connect?: ShoppingListShareWhereUniqueInput | ShoppingListShareWhereUniqueInput[]
   }
 
+  export type ListInvitationCreateNestedManyWithoutInviterInput = {
+    create?: XOR<ListInvitationCreateWithoutInviterInput, ListInvitationUncheckedCreateWithoutInviterInput> | ListInvitationCreateWithoutInviterInput[] | ListInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutInviterInput | ListInvitationCreateOrConnectWithoutInviterInput[]
+    createMany?: ListInvitationCreateManyInviterInputEnvelope
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+  }
+
+  export type ListInvitationCreateNestedManyWithoutUsedByUserInput = {
+    create?: XOR<ListInvitationCreateWithoutUsedByUserInput, ListInvitationUncheckedCreateWithoutUsedByUserInput> | ListInvitationCreateWithoutUsedByUserInput[] | ListInvitationUncheckedCreateWithoutUsedByUserInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutUsedByUserInput | ListInvitationCreateOrConnectWithoutUsedByUserInput[]
+    createMany?: ListInvitationCreateManyUsedByUserInputEnvelope
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+  }
+
   export type ShoppingListUncheckedCreateNestedManyWithoutOwnerInput = {
     create?: XOR<ShoppingListCreateWithoutOwnerInput, ShoppingListUncheckedCreateWithoutOwnerInput> | ShoppingListCreateWithoutOwnerInput[] | ShoppingListUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: ShoppingListCreateOrConnectWithoutOwnerInput | ShoppingListCreateOrConnectWithoutOwnerInput[]
@@ -15137,6 +16900,20 @@ export namespace Prisma {
     connectOrCreate?: ShoppingListShareCreateOrConnectWithoutUserInput | ShoppingListShareCreateOrConnectWithoutUserInput[]
     createMany?: ShoppingListShareCreateManyUserInputEnvelope
     connect?: ShoppingListShareWhereUniqueInput | ShoppingListShareWhereUniqueInput[]
+  }
+
+  export type ListInvitationUncheckedCreateNestedManyWithoutInviterInput = {
+    create?: XOR<ListInvitationCreateWithoutInviterInput, ListInvitationUncheckedCreateWithoutInviterInput> | ListInvitationCreateWithoutInviterInput[] | ListInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutInviterInput | ListInvitationCreateOrConnectWithoutInviterInput[]
+    createMany?: ListInvitationCreateManyInviterInputEnvelope
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+  }
+
+  export type ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput = {
+    create?: XOR<ListInvitationCreateWithoutUsedByUserInput, ListInvitationUncheckedCreateWithoutUsedByUserInput> | ListInvitationCreateWithoutUsedByUserInput[] | ListInvitationUncheckedCreateWithoutUsedByUserInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutUsedByUserInput | ListInvitationCreateOrConnectWithoutUsedByUserInput[]
+    createMany?: ListInvitationCreateManyUsedByUserInputEnvelope
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -15245,6 +17022,34 @@ export namespace Prisma {
     deleteMany?: ShoppingListShareScalarWhereInput | ShoppingListShareScalarWhereInput[]
   }
 
+  export type ListInvitationUpdateManyWithoutInviterNestedInput = {
+    create?: XOR<ListInvitationCreateWithoutInviterInput, ListInvitationUncheckedCreateWithoutInviterInput> | ListInvitationCreateWithoutInviterInput[] | ListInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutInviterInput | ListInvitationCreateOrConnectWithoutInviterInput[]
+    upsert?: ListInvitationUpsertWithWhereUniqueWithoutInviterInput | ListInvitationUpsertWithWhereUniqueWithoutInviterInput[]
+    createMany?: ListInvitationCreateManyInviterInputEnvelope
+    set?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    disconnect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    delete?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    update?: ListInvitationUpdateWithWhereUniqueWithoutInviterInput | ListInvitationUpdateWithWhereUniqueWithoutInviterInput[]
+    updateMany?: ListInvitationUpdateManyWithWhereWithoutInviterInput | ListInvitationUpdateManyWithWhereWithoutInviterInput[]
+    deleteMany?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
+  }
+
+  export type ListInvitationUpdateManyWithoutUsedByUserNestedInput = {
+    create?: XOR<ListInvitationCreateWithoutUsedByUserInput, ListInvitationUncheckedCreateWithoutUsedByUserInput> | ListInvitationCreateWithoutUsedByUserInput[] | ListInvitationUncheckedCreateWithoutUsedByUserInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutUsedByUserInput | ListInvitationCreateOrConnectWithoutUsedByUserInput[]
+    upsert?: ListInvitationUpsertWithWhereUniqueWithoutUsedByUserInput | ListInvitationUpsertWithWhereUniqueWithoutUsedByUserInput[]
+    createMany?: ListInvitationCreateManyUsedByUserInputEnvelope
+    set?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    disconnect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    delete?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    update?: ListInvitationUpdateWithWhereUniqueWithoutUsedByUserInput | ListInvitationUpdateWithWhereUniqueWithoutUsedByUserInput[]
+    updateMany?: ListInvitationUpdateManyWithWhereWithoutUsedByUserInput | ListInvitationUpdateManyWithWhereWithoutUsedByUserInput[]
+    deleteMany?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -15351,6 +17156,34 @@ export namespace Prisma {
     deleteMany?: ShoppingListShareScalarWhereInput | ShoppingListShareScalarWhereInput[]
   }
 
+  export type ListInvitationUncheckedUpdateManyWithoutInviterNestedInput = {
+    create?: XOR<ListInvitationCreateWithoutInviterInput, ListInvitationUncheckedCreateWithoutInviterInput> | ListInvitationCreateWithoutInviterInput[] | ListInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutInviterInput | ListInvitationCreateOrConnectWithoutInviterInput[]
+    upsert?: ListInvitationUpsertWithWhereUniqueWithoutInviterInput | ListInvitationUpsertWithWhereUniqueWithoutInviterInput[]
+    createMany?: ListInvitationCreateManyInviterInputEnvelope
+    set?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    disconnect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    delete?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    update?: ListInvitationUpdateWithWhereUniqueWithoutInviterInput | ListInvitationUpdateWithWhereUniqueWithoutInviterInput[]
+    updateMany?: ListInvitationUpdateManyWithWhereWithoutInviterInput | ListInvitationUpdateManyWithWhereWithoutInviterInput[]
+    deleteMany?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
+  }
+
+  export type ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput = {
+    create?: XOR<ListInvitationCreateWithoutUsedByUserInput, ListInvitationUncheckedCreateWithoutUsedByUserInput> | ListInvitationCreateWithoutUsedByUserInput[] | ListInvitationUncheckedCreateWithoutUsedByUserInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutUsedByUserInput | ListInvitationCreateOrConnectWithoutUsedByUserInput[]
+    upsert?: ListInvitationUpsertWithWhereUniqueWithoutUsedByUserInput | ListInvitationUpsertWithWhereUniqueWithoutUsedByUserInput[]
+    createMany?: ListInvitationCreateManyUsedByUserInputEnvelope
+    set?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    disconnect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    delete?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    update?: ListInvitationUpdateWithWhereUniqueWithoutUsedByUserInput | ListInvitationUpdateWithWhereUniqueWithoutUsedByUserInput[]
+    updateMany?: ListInvitationUpdateManyWithWhereWithoutUsedByUserInput | ListInvitationUpdateManyWithWhereWithoutUsedByUserInput[]
+    deleteMany?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutListsInput = {
     create?: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
     connectOrCreate?: UserCreateOrConnectWithoutListsInput
@@ -15385,6 +17218,13 @@ export namespace Prisma {
     connect?: ShoppingListShareWhereUniqueInput | ShoppingListShareWhereUniqueInput[]
   }
 
+  export type ListInvitationCreateNestedManyWithoutListInput = {
+    create?: XOR<ListInvitationCreateWithoutListInput, ListInvitationUncheckedCreateWithoutListInput> | ListInvitationCreateWithoutListInput[] | ListInvitationUncheckedCreateWithoutListInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutListInput | ListInvitationCreateOrConnectWithoutListInput[]
+    createMany?: ListInvitationCreateManyListInputEnvelope
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+  }
+
   export type ListItemUncheckedCreateNestedManyWithoutListInput = {
     create?: XOR<ListItemCreateWithoutListInput, ListItemUncheckedCreateWithoutListInput> | ListItemCreateWithoutListInput[] | ListItemUncheckedCreateWithoutListInput[]
     connectOrCreate?: ListItemCreateOrConnectWithoutListInput | ListItemCreateOrConnectWithoutListInput[]
@@ -15411,6 +17251,13 @@ export namespace Prisma {
     connectOrCreate?: ShoppingListShareCreateOrConnectWithoutListInput | ShoppingListShareCreateOrConnectWithoutListInput[]
     createMany?: ShoppingListShareCreateManyListInputEnvelope
     connect?: ShoppingListShareWhereUniqueInput | ShoppingListShareWhereUniqueInput[]
+  }
+
+  export type ListInvitationUncheckedCreateNestedManyWithoutListInput = {
+    create?: XOR<ListInvitationCreateWithoutListInput, ListInvitationUncheckedCreateWithoutListInput> | ListInvitationCreateWithoutListInput[] | ListInvitationUncheckedCreateWithoutListInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutListInput | ListInvitationCreateOrConnectWithoutListInput[]
+    createMany?: ListInvitationCreateManyListInputEnvelope
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -15485,6 +17332,20 @@ export namespace Prisma {
     deleteMany?: ShoppingListShareScalarWhereInput | ShoppingListShareScalarWhereInput[]
   }
 
+  export type ListInvitationUpdateManyWithoutListNestedInput = {
+    create?: XOR<ListInvitationCreateWithoutListInput, ListInvitationUncheckedCreateWithoutListInput> | ListInvitationCreateWithoutListInput[] | ListInvitationUncheckedCreateWithoutListInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutListInput | ListInvitationCreateOrConnectWithoutListInput[]
+    upsert?: ListInvitationUpsertWithWhereUniqueWithoutListInput | ListInvitationUpsertWithWhereUniqueWithoutListInput[]
+    createMany?: ListInvitationCreateManyListInputEnvelope
+    set?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    disconnect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    delete?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    update?: ListInvitationUpdateWithWhereUniqueWithoutListInput | ListInvitationUpdateWithWhereUniqueWithoutListInput[]
+    updateMany?: ListInvitationUpdateManyWithWhereWithoutListInput | ListInvitationUpdateManyWithWhereWithoutListInput[]
+    deleteMany?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
+  }
+
   export type ListItemUncheckedUpdateManyWithoutListNestedInput = {
     create?: XOR<ListItemCreateWithoutListInput, ListItemUncheckedCreateWithoutListInput> | ListItemCreateWithoutListInput[] | ListItemUncheckedCreateWithoutListInput[]
     connectOrCreate?: ListItemCreateOrConnectWithoutListInput | ListItemCreateOrConnectWithoutListInput[]
@@ -15539,6 +17400,20 @@ export namespace Prisma {
     update?: ShoppingListShareUpdateWithWhereUniqueWithoutListInput | ShoppingListShareUpdateWithWhereUniqueWithoutListInput[]
     updateMany?: ShoppingListShareUpdateManyWithWhereWithoutListInput | ShoppingListShareUpdateManyWithWhereWithoutListInput[]
     deleteMany?: ShoppingListShareScalarWhereInput | ShoppingListShareScalarWhereInput[]
+  }
+
+  export type ListInvitationUncheckedUpdateManyWithoutListNestedInput = {
+    create?: XOR<ListInvitationCreateWithoutListInput, ListInvitationUncheckedCreateWithoutListInput> | ListInvitationCreateWithoutListInput[] | ListInvitationUncheckedCreateWithoutListInput[]
+    connectOrCreate?: ListInvitationCreateOrConnectWithoutListInput | ListInvitationCreateOrConnectWithoutListInput[]
+    upsert?: ListInvitationUpsertWithWhereUniqueWithoutListInput | ListInvitationUpsertWithWhereUniqueWithoutListInput[]
+    createMany?: ListInvitationCreateManyListInputEnvelope
+    set?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    disconnect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    delete?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    connect?: ListInvitationWhereUniqueInput | ListInvitationWhereUniqueInput[]
+    update?: ListInvitationUpdateWithWhereUniqueWithoutListInput | ListInvitationUpdateWithWhereUniqueWithoutListInput[]
+    updateMany?: ListInvitationUpdateManyWithWhereWithoutListInput | ListInvitationUpdateManyWithWhereWithoutListInput[]
+    deleteMany?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutAccessesInput = {
@@ -15899,6 +17774,50 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSharedListsInput, UserUpdateWithoutSharedListsInput>, UserUncheckedUpdateWithoutSharedListsInput>
   }
 
+  export type ShoppingListCreateNestedOneWithoutInvitationsInput = {
+    create?: XOR<ShoppingListCreateWithoutInvitationsInput, ShoppingListUncheckedCreateWithoutInvitationsInput>
+    connectOrCreate?: ShoppingListCreateOrConnectWithoutInvitationsInput
+    connect?: ShoppingListWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreatedInvitationsInput = {
+    create?: XOR<UserCreateWithoutCreatedInvitationsInput, UserUncheckedCreateWithoutCreatedInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedInvitationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutUsedInvitationsInput = {
+    create?: XOR<UserCreateWithoutUsedInvitationsInput, UserUncheckedCreateWithoutUsedInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUsedInvitationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ShoppingListUpdateOneRequiredWithoutInvitationsNestedInput = {
+    create?: XOR<ShoppingListCreateWithoutInvitationsInput, ShoppingListUncheckedCreateWithoutInvitationsInput>
+    connectOrCreate?: ShoppingListCreateOrConnectWithoutInvitationsInput
+    upsert?: ShoppingListUpsertWithoutInvitationsInput
+    connect?: ShoppingListWhereUniqueInput
+    update?: XOR<XOR<ShoppingListUpdateToOneWithWhereWithoutInvitationsInput, ShoppingListUpdateWithoutInvitationsInput>, ShoppingListUncheckedUpdateWithoutInvitationsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCreatedInvitationsNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedInvitationsInput, UserUncheckedCreateWithoutCreatedInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedInvitationsInput
+    upsert?: UserUpsertWithoutCreatedInvitationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedInvitationsInput, UserUpdateWithoutCreatedInvitationsInput>, UserUncheckedUpdateWithoutCreatedInvitationsInput>
+  }
+
+  export type UserUpdateOneWithoutUsedInvitationsNestedInput = {
+    create?: XOR<UserCreateWithoutUsedInvitationsInput, UserUncheckedCreateWithoutUsedInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUsedInvitationsInput
+    upsert?: UserUpsertWithoutUsedInvitationsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUsedInvitationsInput, UserUpdateWithoutUsedInvitationsInput>, UserUncheckedUpdateWithoutUsedInvitationsInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -16214,6 +18133,7 @@ export namespace Prisma {
     receipts?: ReceiptCreateNestedManyWithoutListInput
     accesses?: UserListAccessCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareCreateNestedManyWithoutListInput
+    invitations?: ListInvitationCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListUncheckedCreateWithoutOwnerInput = {
@@ -16226,6 +18146,7 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedCreateNestedManyWithoutListInput
     accesses?: UserListAccessUncheckedCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareUncheckedCreateNestedManyWithoutListInput
+    invitations?: ListInvitationUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListCreateOrConnectWithoutOwnerInput = {
@@ -16413,6 +18334,80 @@ export namespace Prisma {
 
   export type ShoppingListShareCreateManyUserInputEnvelope = {
     data: ShoppingListShareCreateManyUserInput | ShoppingListShareCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ListInvitationCreateWithoutInviterInput = {
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+    list: ShoppingListCreateNestedOneWithoutInvitationsInput
+    usedByUser?: UserCreateNestedOneWithoutUsedInvitationsInput
+  }
+
+  export type ListInvitationUncheckedCreateWithoutInviterInput = {
+    invitation_id?: number
+    list_id: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    used_by?: number | null
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+  }
+
+  export type ListInvitationCreateOrConnectWithoutInviterInput = {
+    where: ListInvitationWhereUniqueInput
+    create: XOR<ListInvitationCreateWithoutInviterInput, ListInvitationUncheckedCreateWithoutInviterInput>
+  }
+
+  export type ListInvitationCreateManyInviterInputEnvelope = {
+    data: ListInvitationCreateManyInviterInput | ListInvitationCreateManyInviterInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ListInvitationCreateWithoutUsedByUserInput = {
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+    list: ShoppingListCreateNestedOneWithoutInvitationsInput
+    inviter: UserCreateNestedOneWithoutCreatedInvitationsInput
+  }
+
+  export type ListInvitationUncheckedCreateWithoutUsedByUserInput = {
+    invitation_id?: number
+    list_id: number
+    invited_by: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+  }
+
+  export type ListInvitationCreateOrConnectWithoutUsedByUserInput = {
+    where: ListInvitationWhereUniqueInput
+    create: XOR<ListInvitationCreateWithoutUsedByUserInput, ListInvitationUncheckedCreateWithoutUsedByUserInput>
+  }
+
+  export type ListInvitationCreateManyUsedByUserInputEnvelope = {
+    data: ListInvitationCreateManyUsedByUserInput | ListInvitationCreateManyUsedByUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -16613,6 +18608,56 @@ export namespace Prisma {
     role?: EnumRoleFilter<"ShoppingListShare"> | $Enums.Role
   }
 
+  export type ListInvitationUpsertWithWhereUniqueWithoutInviterInput = {
+    where: ListInvitationWhereUniqueInput
+    update: XOR<ListInvitationUpdateWithoutInviterInput, ListInvitationUncheckedUpdateWithoutInviterInput>
+    create: XOR<ListInvitationCreateWithoutInviterInput, ListInvitationUncheckedCreateWithoutInviterInput>
+  }
+
+  export type ListInvitationUpdateWithWhereUniqueWithoutInviterInput = {
+    where: ListInvitationWhereUniqueInput
+    data: XOR<ListInvitationUpdateWithoutInviterInput, ListInvitationUncheckedUpdateWithoutInviterInput>
+  }
+
+  export type ListInvitationUpdateManyWithWhereWithoutInviterInput = {
+    where: ListInvitationScalarWhereInput
+    data: XOR<ListInvitationUpdateManyMutationInput, ListInvitationUncheckedUpdateManyWithoutInviterInput>
+  }
+
+  export type ListInvitationScalarWhereInput = {
+    AND?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
+    OR?: ListInvitationScalarWhereInput[]
+    NOT?: ListInvitationScalarWhereInput | ListInvitationScalarWhereInput[]
+    invitation_id?: IntFilter<"ListInvitation"> | number
+    list_id?: IntFilter<"ListInvitation"> | number
+    invited_by?: IntFilter<"ListInvitation"> | number
+    invite_code?: StringFilter<"ListInvitation"> | string
+    role?: EnumRoleFilter<"ListInvitation"> | $Enums.Role
+    expires_at?: DateTimeFilter<"ListInvitation"> | Date | string
+    is_used?: BoolFilter<"ListInvitation"> | boolean
+    used_by?: IntNullableFilter<"ListInvitation"> | number | null
+    created_at?: DateTimeFilter<"ListInvitation"> | Date | string
+    used_at?: DateTimeNullableFilter<"ListInvitation"> | Date | string | null
+    max_uses?: IntFilter<"ListInvitation"> | number
+    uses_count?: IntFilter<"ListInvitation"> | number
+  }
+
+  export type ListInvitationUpsertWithWhereUniqueWithoutUsedByUserInput = {
+    where: ListInvitationWhereUniqueInput
+    update: XOR<ListInvitationUpdateWithoutUsedByUserInput, ListInvitationUncheckedUpdateWithoutUsedByUserInput>
+    create: XOR<ListInvitationCreateWithoutUsedByUserInput, ListInvitationUncheckedCreateWithoutUsedByUserInput>
+  }
+
+  export type ListInvitationUpdateWithWhereUniqueWithoutUsedByUserInput = {
+    where: ListInvitationWhereUniqueInput
+    data: XOR<ListInvitationUpdateWithoutUsedByUserInput, ListInvitationUncheckedUpdateWithoutUsedByUserInput>
+  }
+
+  export type ListInvitationUpdateManyWithWhereWithoutUsedByUserInput = {
+    where: ListInvitationScalarWhereInput
+    data: XOR<ListInvitationUpdateManyMutationInput, ListInvitationUncheckedUpdateManyWithoutUsedByUserInput>
+  }
+
   export type UserCreateWithoutListsInput = {
     name: string
     email: string
@@ -16625,6 +18670,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateWithoutListsInput = {
@@ -16640,6 +18687,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserCreateOrConnectWithoutListsInput = {
@@ -16773,6 +18822,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ListInvitationCreateWithoutListInput = {
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+    inviter: UserCreateNestedOneWithoutCreatedInvitationsInput
+    usedByUser?: UserCreateNestedOneWithoutUsedInvitationsInput
+  }
+
+  export type ListInvitationUncheckedCreateWithoutListInput = {
+    invitation_id?: number
+    invited_by: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    used_by?: number | null
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+  }
+
+  export type ListInvitationCreateOrConnectWithoutListInput = {
+    where: ListInvitationWhereUniqueInput
+    create: XOR<ListInvitationCreateWithoutListInput, ListInvitationUncheckedCreateWithoutListInput>
+  }
+
+  export type ListInvitationCreateManyListInputEnvelope = {
+    data: ListInvitationCreateManyListInput | ListInvitationCreateManyListInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutListsInput = {
     update: XOR<UserUpdateWithoutListsInput, UserUncheckedUpdateWithoutListsInput>
     create: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
@@ -16796,6 +18882,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutListsInput = {
@@ -16811,6 +18899,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type ListItemUpsertWithWhereUniqueWithoutListInput = {
@@ -16877,6 +18967,22 @@ export namespace Prisma {
     data: XOR<ShoppingListShareUpdateManyMutationInput, ShoppingListShareUncheckedUpdateManyWithoutListInput>
   }
 
+  export type ListInvitationUpsertWithWhereUniqueWithoutListInput = {
+    where: ListInvitationWhereUniqueInput
+    update: XOR<ListInvitationUpdateWithoutListInput, ListInvitationUncheckedUpdateWithoutListInput>
+    create: XOR<ListInvitationCreateWithoutListInput, ListInvitationUncheckedCreateWithoutListInput>
+  }
+
+  export type ListInvitationUpdateWithWhereUniqueWithoutListInput = {
+    where: ListInvitationWhereUniqueInput
+    data: XOR<ListInvitationUpdateWithoutListInput, ListInvitationUncheckedUpdateWithoutListInput>
+  }
+
+  export type ListInvitationUpdateManyWithWhereWithoutListInput = {
+    where: ListInvitationScalarWhereInput
+    data: XOR<ListInvitationUpdateManyMutationInput, ListInvitationUncheckedUpdateManyWithoutListInput>
+  }
+
   export type UserCreateWithoutAccessesInput = {
     name: string
     email: string
@@ -16889,6 +18995,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateWithoutAccessesInput = {
@@ -16904,6 +19012,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserCreateOrConnectWithoutAccessesInput = {
@@ -16920,6 +19030,7 @@ export namespace Prisma {
     items?: ListItemCreateNestedManyWithoutListInput
     receipts?: ReceiptCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareCreateNestedManyWithoutListInput
+    invitations?: ListInvitationCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListUncheckedCreateWithoutAccessesInput = {
@@ -16932,6 +19043,7 @@ export namespace Prisma {
     items?: ListItemUncheckedCreateNestedManyWithoutListInput
     receipts?: ReceiptUncheckedCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareUncheckedCreateNestedManyWithoutListInput
+    invitations?: ListInvitationUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListCreateOrConnectWithoutAccessesInput = {
@@ -16951,6 +19063,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateWithoutInvitedAccessInput = {
@@ -16966,6 +19080,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserCreateOrConnectWithoutInvitedAccessInput = {
@@ -16996,6 +19112,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessesInput = {
@@ -17011,6 +19129,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type ShoppingListUpsertWithoutAccessesInput = {
@@ -17033,6 +19153,7 @@ export namespace Prisma {
     items?: ListItemUpdateManyWithoutListNestedInput
     receipts?: ReceiptUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListUncheckedUpdateWithoutAccessesInput = {
@@ -17045,6 +19166,7 @@ export namespace Prisma {
     items?: ListItemUncheckedUpdateManyWithoutListNestedInput
     receipts?: ReceiptUncheckedUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUncheckedUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type UserUpsertWithoutInvitedAccessInput = {
@@ -17070,6 +19192,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvitedAccessInput = {
@@ -17085,6 +19209,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type ListItemCreateWithoutCategoryInput = {
@@ -17190,6 +19316,7 @@ export namespace Prisma {
     receipts?: ReceiptCreateNestedManyWithoutListInput
     accesses?: UserListAccessCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareCreateNestedManyWithoutListInput
+    invitations?: ListInvitationCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListUncheckedCreateWithoutItemsInput = {
@@ -17202,6 +19329,7 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedCreateNestedManyWithoutListInput
     accesses?: UserListAccessUncheckedCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareUncheckedCreateNestedManyWithoutListInput
+    invitations?: ListInvitationUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListCreateOrConnectWithoutItemsInput = {
@@ -17241,6 +19369,8 @@ export namespace Prisma {
     receipts?: ReceiptCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateWithoutCheckedItemsInput = {
@@ -17256,6 +19386,8 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserCreateOrConnectWithoutCheckedItemsInput = {
@@ -17283,6 +19415,7 @@ export namespace Prisma {
     receipts?: ReceiptUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListUncheckedUpdateWithoutItemsInput = {
@@ -17295,6 +19428,7 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUncheckedUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUncheckedUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type CategoryUpsertWithoutItemsInput = {
@@ -17346,6 +19480,8 @@ export namespace Prisma {
     receipts?: ReceiptUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCheckedItemsInput = {
@@ -17361,6 +19497,8 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type ShoppingListCreateWithoutReceiptsInput = {
@@ -17372,6 +19510,7 @@ export namespace Prisma {
     items?: ListItemCreateNestedManyWithoutListInput
     accesses?: UserListAccessCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareCreateNestedManyWithoutListInput
+    invitations?: ListInvitationCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListUncheckedCreateWithoutReceiptsInput = {
@@ -17384,6 +19523,7 @@ export namespace Prisma {
     items?: ListItemUncheckedCreateNestedManyWithoutListInput
     accesses?: UserListAccessUncheckedCreateNestedManyWithoutListInput
     sharedWith?: ShoppingListShareUncheckedCreateNestedManyWithoutListInput
+    invitations?: ListInvitationUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListCreateOrConnectWithoutReceiptsInput = {
@@ -17403,6 +19543,8 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateWithoutReceiptsInput = {
@@ -17418,6 +19560,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserCreateOrConnectWithoutReceiptsInput = {
@@ -17474,6 +19618,7 @@ export namespace Prisma {
     items?: ListItemUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListUncheckedUpdateWithoutReceiptsInput = {
@@ -17486,6 +19631,7 @@ export namespace Prisma {
     items?: ListItemUncheckedUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUncheckedUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUncheckedUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type UserUpsertWithoutReceiptsInput = {
@@ -17511,6 +19657,8 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceiptsInput = {
@@ -17526,6 +19674,8 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type ReceiptItemUpsertWithWhereUniqueWithoutReceiptInput = {
@@ -17656,6 +19806,8 @@ export namespace Prisma {
     receipts?: ReceiptCreateNestedManyWithoutUserInput
     checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateWithoutExpensesInput = {
@@ -17671,6 +19823,8 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedCreateNestedManyWithoutUserInput
     checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
     sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserCreateOrConnectWithoutExpensesInput = {
@@ -17721,6 +19875,8 @@ export namespace Prisma {
     receipts?: ReceiptUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExpensesInput = {
@@ -17736,6 +19892,8 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
     sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type CategoryUpsertWithoutExpensesInput = {
@@ -17773,6 +19931,7 @@ export namespace Prisma {
     items?: ListItemCreateNestedManyWithoutListInput
     receipts?: ReceiptCreateNestedManyWithoutListInput
     accesses?: UserListAccessCreateNestedManyWithoutListInput
+    invitations?: ListInvitationCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListUncheckedCreateWithoutSharedWithInput = {
@@ -17785,6 +19944,7 @@ export namespace Prisma {
     items?: ListItemUncheckedCreateNestedManyWithoutListInput
     receipts?: ReceiptUncheckedCreateNestedManyWithoutListInput
     accesses?: UserListAccessUncheckedCreateNestedManyWithoutListInput
+    invitations?: ListInvitationUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ShoppingListCreateOrConnectWithoutSharedWithInput = {
@@ -17804,6 +19964,8 @@ export namespace Prisma {
     receipts?: ReceiptCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserUncheckedCreateWithoutSharedListsInput = {
@@ -17819,6 +19981,8 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
   }
 
   export type UserCreateOrConnectWithoutSharedListsInput = {
@@ -17846,6 +20010,7 @@ export namespace Prisma {
     items?: ListItemUpdateManyWithoutListNestedInput
     receipts?: ReceiptUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListUncheckedUpdateWithoutSharedWithInput = {
@@ -17858,6 +20023,7 @@ export namespace Prisma {
     items?: ListItemUncheckedUpdateManyWithoutListNestedInput
     receipts?: ReceiptUncheckedUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUncheckedUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type UserUpsertWithoutSharedListsInput = {
@@ -17883,6 +20049,8 @@ export namespace Prisma {
     receipts?: ReceiptUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSharedListsInput = {
@@ -17898,6 +20066,238 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
+  }
+
+  export type ShoppingListCreateWithoutInvitationsInput = {
+    name?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    is_shared?: boolean
+    owner: UserCreateNestedOneWithoutListsInput
+    items?: ListItemCreateNestedManyWithoutListInput
+    receipts?: ReceiptCreateNestedManyWithoutListInput
+    accesses?: UserListAccessCreateNestedManyWithoutListInput
+    sharedWith?: ShoppingListShareCreateNestedManyWithoutListInput
+  }
+
+  export type ShoppingListUncheckedCreateWithoutInvitationsInput = {
+    list_id?: number
+    owner_id: number
+    name?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    is_shared?: boolean
+    items?: ListItemUncheckedCreateNestedManyWithoutListInput
+    receipts?: ReceiptUncheckedCreateNestedManyWithoutListInput
+    accesses?: UserListAccessUncheckedCreateNestedManyWithoutListInput
+    sharedWith?: ShoppingListShareUncheckedCreateNestedManyWithoutListInput
+  }
+
+  export type ShoppingListCreateOrConnectWithoutInvitationsInput = {
+    where: ShoppingListWhereUniqueInput
+    create: XOR<ShoppingListCreateWithoutInvitationsInput, ShoppingListUncheckedCreateWithoutInvitationsInput>
+  }
+
+  export type UserCreateWithoutCreatedInvitationsInput = {
+    name: string
+    email: string
+    password_hash: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    lists?: ShoppingListCreateNestedManyWithoutOwnerInput
+    accesses?: UserListAccessCreateNestedManyWithoutUserInput
+    invitedAccess?: UserListAccessCreateNestedManyWithoutInvitedByInput
+    receipts?: ReceiptCreateNestedManyWithoutUserInput
+    expenses?: ExpenseCreateNestedManyWithoutUserInput
+    checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
+    sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    usedInvitations?: ListInvitationCreateNestedManyWithoutUsedByUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedInvitationsInput = {
+    user_id?: number
+    name: string
+    email: string
+    password_hash: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    lists?: ShoppingListUncheckedCreateNestedManyWithoutOwnerInput
+    accesses?: UserListAccessUncheckedCreateNestedManyWithoutUserInput
+    invitedAccess?: UserListAccessUncheckedCreateNestedManyWithoutInvitedByInput
+    receipts?: ReceiptUncheckedCreateNestedManyWithoutUserInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
+    checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
+    sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    usedInvitations?: ListInvitationUncheckedCreateNestedManyWithoutUsedByUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedInvitationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedInvitationsInput, UserUncheckedCreateWithoutCreatedInvitationsInput>
+  }
+
+  export type UserCreateWithoutUsedInvitationsInput = {
+    name: string
+    email: string
+    password_hash: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    lists?: ShoppingListCreateNestedManyWithoutOwnerInput
+    accesses?: UserListAccessCreateNestedManyWithoutUserInput
+    invitedAccess?: UserListAccessCreateNestedManyWithoutInvitedByInput
+    receipts?: ReceiptCreateNestedManyWithoutUserInput
+    expenses?: ExpenseCreateNestedManyWithoutUserInput
+    checkedItems?: ListItemCreateNestedManyWithoutCheckedByInput
+    sharedLists?: ShoppingListShareCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationCreateNestedManyWithoutInviterInput
+  }
+
+  export type UserUncheckedCreateWithoutUsedInvitationsInput = {
+    user_id?: number
+    name: string
+    email: string
+    password_hash: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    lists?: ShoppingListUncheckedCreateNestedManyWithoutOwnerInput
+    accesses?: UserListAccessUncheckedCreateNestedManyWithoutUserInput
+    invitedAccess?: UserListAccessUncheckedCreateNestedManyWithoutInvitedByInput
+    receipts?: ReceiptUncheckedCreateNestedManyWithoutUserInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
+    checkedItems?: ListItemUncheckedCreateNestedManyWithoutCheckedByInput
+    sharedLists?: ShoppingListShareUncheckedCreateNestedManyWithoutUserInput
+    createdInvitations?: ListInvitationUncheckedCreateNestedManyWithoutInviterInput
+  }
+
+  export type UserCreateOrConnectWithoutUsedInvitationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUsedInvitationsInput, UserUncheckedCreateWithoutUsedInvitationsInput>
+  }
+
+  export type ShoppingListUpsertWithoutInvitationsInput = {
+    update: XOR<ShoppingListUpdateWithoutInvitationsInput, ShoppingListUncheckedUpdateWithoutInvitationsInput>
+    create: XOR<ShoppingListCreateWithoutInvitationsInput, ShoppingListUncheckedCreateWithoutInvitationsInput>
+    where?: ShoppingListWhereInput
+  }
+
+  export type ShoppingListUpdateToOneWithWhereWithoutInvitationsInput = {
+    where?: ShoppingListWhereInput
+    data: XOR<ShoppingListUpdateWithoutInvitationsInput, ShoppingListUncheckedUpdateWithoutInvitationsInput>
+  }
+
+  export type ShoppingListUpdateWithoutInvitationsInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_shared?: BoolFieldUpdateOperationsInput | boolean
+    owner?: UserUpdateOneRequiredWithoutListsNestedInput
+    items?: ListItemUpdateManyWithoutListNestedInput
+    receipts?: ReceiptUpdateManyWithoutListNestedInput
+    accesses?: UserListAccessUpdateManyWithoutListNestedInput
+    sharedWith?: ShoppingListShareUpdateManyWithoutListNestedInput
+  }
+
+  export type ShoppingListUncheckedUpdateWithoutInvitationsInput = {
+    list_id?: IntFieldUpdateOperationsInput | number
+    owner_id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_shared?: BoolFieldUpdateOperationsInput | boolean
+    items?: ListItemUncheckedUpdateManyWithoutListNestedInput
+    receipts?: ReceiptUncheckedUpdateManyWithoutListNestedInput
+    accesses?: UserListAccessUncheckedUpdateManyWithoutListNestedInput
+    sharedWith?: ShoppingListShareUncheckedUpdateManyWithoutListNestedInput
+  }
+
+  export type UserUpsertWithoutCreatedInvitationsInput = {
+    update: XOR<UserUpdateWithoutCreatedInvitationsInput, UserUncheckedUpdateWithoutCreatedInvitationsInput>
+    create: XOR<UserCreateWithoutCreatedInvitationsInput, UserUncheckedCreateWithoutCreatedInvitationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedInvitationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedInvitationsInput, UserUncheckedUpdateWithoutCreatedInvitationsInput>
+  }
+
+  export type UserUpdateWithoutCreatedInvitationsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lists?: ShoppingListUpdateManyWithoutOwnerNestedInput
+    accesses?: UserListAccessUpdateManyWithoutUserNestedInput
+    invitedAccess?: UserListAccessUpdateManyWithoutInvitedByNestedInput
+    receipts?: ReceiptUpdateManyWithoutUserNestedInput
+    expenses?: ExpenseUpdateManyWithoutUserNestedInput
+    checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
+    sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    usedInvitations?: ListInvitationUpdateManyWithoutUsedByUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedInvitationsInput = {
+    user_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lists?: ShoppingListUncheckedUpdateManyWithoutOwnerNestedInput
+    accesses?: UserListAccessUncheckedUpdateManyWithoutUserNestedInput
+    invitedAccess?: UserListAccessUncheckedUpdateManyWithoutInvitedByNestedInput
+    receipts?: ReceiptUncheckedUpdateManyWithoutUserNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
+    checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
+    sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    usedInvitations?: ListInvitationUncheckedUpdateManyWithoutUsedByUserNestedInput
+  }
+
+  export type UserUpsertWithoutUsedInvitationsInput = {
+    update: XOR<UserUpdateWithoutUsedInvitationsInput, UserUncheckedUpdateWithoutUsedInvitationsInput>
+    create: XOR<UserCreateWithoutUsedInvitationsInput, UserUncheckedCreateWithoutUsedInvitationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUsedInvitationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUsedInvitationsInput, UserUncheckedUpdateWithoutUsedInvitationsInput>
+  }
+
+  export type UserUpdateWithoutUsedInvitationsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lists?: ShoppingListUpdateManyWithoutOwnerNestedInput
+    accesses?: UserListAccessUpdateManyWithoutUserNestedInput
+    invitedAccess?: UserListAccessUpdateManyWithoutInvitedByNestedInput
+    receipts?: ReceiptUpdateManyWithoutUserNestedInput
+    expenses?: ExpenseUpdateManyWithoutUserNestedInput
+    checkedItems?: ListItemUpdateManyWithoutCheckedByNestedInput
+    sharedLists?: ShoppingListShareUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUpdateManyWithoutInviterNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUsedInvitationsInput = {
+    user_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lists?: ShoppingListUncheckedUpdateManyWithoutOwnerNestedInput
+    accesses?: UserListAccessUncheckedUpdateManyWithoutUserNestedInput
+    invitedAccess?: UserListAccessUncheckedUpdateManyWithoutInvitedByNestedInput
+    receipts?: ReceiptUncheckedUpdateManyWithoutUserNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
+    checkedItems?: ListItemUncheckedUpdateManyWithoutCheckedByNestedInput
+    sharedLists?: ShoppingListShareUncheckedUpdateManyWithoutUserNestedInput
+    createdInvitations?: ListInvitationUncheckedUpdateManyWithoutInviterNestedInput
   }
 
   export type ShoppingListCreateManyOwnerInput = {
@@ -17969,6 +20369,34 @@ export namespace Prisma {
     role: $Enums.Role
   }
 
+  export type ListInvitationCreateManyInviterInput = {
+    invitation_id?: number
+    list_id: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    used_by?: number | null
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+  }
+
+  export type ListInvitationCreateManyUsedByUserInput = {
+    invitation_id?: number
+    list_id: number
+    invited_by: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
+  }
+
   export type ShoppingListUpdateWithoutOwnerInput = {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17978,6 +20406,7 @@ export namespace Prisma {
     receipts?: ReceiptUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListUncheckedUpdateWithoutOwnerInput = {
@@ -17990,6 +20419,7 @@ export namespace Prisma {
     receipts?: ReceiptUncheckedUpdateManyWithoutListNestedInput
     accesses?: UserListAccessUncheckedUpdateManyWithoutListNestedInput
     sharedWith?: ShoppingListShareUncheckedUpdateManyWithoutListNestedInput
+    invitations?: ListInvitationUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type ShoppingListUncheckedUpdateManyWithoutOwnerInput = {
@@ -18179,6 +20609,88 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
+  export type ListInvitationUpdateWithoutInviterInput = {
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+    list?: ShoppingListUpdateOneRequiredWithoutInvitationsNestedInput
+    usedByUser?: UserUpdateOneWithoutUsedInvitationsNestedInput
+  }
+
+  export type ListInvitationUncheckedUpdateWithoutInviterInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    list_id?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    used_by?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ListInvitationUncheckedUpdateManyWithoutInviterInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    list_id?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    used_by?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ListInvitationUpdateWithoutUsedByUserInput = {
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+    list?: ShoppingListUpdateOneRequiredWithoutInvitationsNestedInput
+    inviter?: UserUpdateOneRequiredWithoutCreatedInvitationsNestedInput
+  }
+
+  export type ListInvitationUncheckedUpdateWithoutUsedByUserInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    list_id?: IntFieldUpdateOperationsInput | number
+    invited_by?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ListInvitationUncheckedUpdateManyWithoutUsedByUserInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    list_id?: IntFieldUpdateOperationsInput | number
+    invited_by?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
   export type ListItemCreateManyListInput = {
     item_id?: number
     category_id?: number | null
@@ -18221,6 +20733,20 @@ export namespace Prisma {
     id?: number
     user_id: number
     role: $Enums.Role
+  }
+
+  export type ListInvitationCreateManyListInput = {
+    invitation_id?: number
+    invited_by: number
+    invite_code: string
+    role?: $Enums.Role
+    expires_at: Date | string
+    is_used?: boolean
+    used_by?: number | null
+    created_at?: Date | string
+    used_at?: Date | string | null
+    max_uses?: number
+    uses_count?: number
   }
 
   export type ListItemUpdateWithoutListInput = {
@@ -18351,6 +20877,47 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     user_id?: IntFieldUpdateOperationsInput | number
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  }
+
+  export type ListInvitationUpdateWithoutListInput = {
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+    inviter?: UserUpdateOneRequiredWithoutCreatedInvitationsNestedInput
+    usedByUser?: UserUpdateOneWithoutUsedInvitationsNestedInput
+  }
+
+  export type ListInvitationUncheckedUpdateWithoutListInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    invited_by?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    used_by?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ListInvitationUncheckedUpdateManyWithoutListInput = {
+    invitation_id?: IntFieldUpdateOperationsInput | number
+    invited_by?: IntFieldUpdateOperationsInput | number
+    invite_code?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    is_used?: BoolFieldUpdateOperationsInput | boolean
+    used_by?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    used_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    max_uses?: IntFieldUpdateOperationsInput | number
+    uses_count?: IntFieldUpdateOperationsInput | number
   }
 
   export type ListItemCreateManyCategoryInput = {

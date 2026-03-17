@@ -227,4 +227,161 @@ export const listService = {
       throw error;
     }
   },
+
+  // Liste öğelerini getir
+  getListItems: async (listId: number, userId: number) => {
+    try {
+      const response = await apiClient.get(`/api/lists/${listId}/items?user_id=${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Liste öğesi ekle
+  addListItem: async (listId: number, itemData: {
+    name: string;
+    quantity?: number;
+    price?: number;
+    category_id?: number;
+    user_id: number;
+  }) => {
+    try {
+      const response = await apiClient.post(`/api/lists/${listId}/items`, itemData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Liste öğesi güncelle
+  updateListItem: async (listId: number, itemId: number, itemData: {
+    name?: string;
+    quantity?: number;
+    price?: number;
+    is_checked?: boolean;
+    user_id: number;
+  }) => {
+    try {
+      const response = await apiClient.put(`/api/lists/${listId}/items/${itemId}`, itemData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Liste öğesi sil
+  deleteListItem: async (listId: number, itemId: number, userId: number) => {
+    try {
+      const response = await apiClient.delete(`/api/lists/${listId}/items/${itemId}?user_id=${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Liste öğesini işaretle/işareti kaldır
+  toggleItemCheck: async (listId: number, itemId: number, userId: number) => {
+    try {
+      const response = await apiClient.patch(`/api/lists/${listId}/items/${itemId}/toggle`, { user_id: userId });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+};
+
+// Share servisleri
+export const shareService = {
+  // Davet oluştur
+  createInvitation: async (data: {
+    list_id: number;
+    user_id: number;
+    role?: 'viewer' | 'editor';
+    expires_in_days?: number;
+    max_uses?: number;
+  }) => {
+    try {
+      const response = await apiClient.post('/api/share/invite', data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Davet koduyla listeye katıl
+  joinWithCode: async (data: {
+    invite_code: string;
+    user_id: number;
+  }) => {
+    try {
+      const response = await apiClient.post('/api/share/join', data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Listenin davetlerini getir
+  getListInvitations: async (listId: number, userId: number) => {
+    try {
+      const response = await apiClient.get(`/api/share/invitations/${listId}?user_id=${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Daveti iptal et
+  deleteInvitation: async (invitationId: number, userId: number) => {
+    try {
+      const response = await apiClient.delete(`/api/share/invitations/${invitationId}?user_id=${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Liste üyelerini getir
+  getListMembers: async (listId: number, userId: number) => {
+    try {
+      const response = await apiClient.get(`/api/share/members/${listId}?user_id=${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Üye erişimini kaldır
+  removeMemberAccess: async (listId: number, targetUserId: number, requestUserId: number) => {
+    try {
+      const response = await apiClient.delete(`/api/share/members/${listId}/${targetUserId}?user_id=${requestUserId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Listeden ayrıl
+  leaveList: async (listId: number, userId: number) => {
+    try {
+      const response = await apiClient.post(`/api/share/leave/${listId}`, { user_id: userId });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Üye rolünü güncelle
+  updateMemberRole: async (listId: number, userId: number, role: 'viewer' | 'editor' | 'owner', ownerId: number) => {
+    try {
+      const response = await apiClient.put(`/api/share/members/${listId}/${userId}/role`, {
+        role: role,
+        owner_id: ownerId,
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

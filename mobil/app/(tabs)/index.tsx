@@ -8,11 +8,15 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
+  Alert,
+  TextInput,
+  Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {useAuthStore } from '@/store/authStore';
 import { useRouter } from 'expo-router';
-import { receiptService, listService } from '@/services/api';
+import { receiptService, listService, shareService } from '@/services/api';
+import ShoppingListCard from '@/components/list/ShoppingListCard';
 
 export default function HomeScreen() {
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -21,9 +25,16 @@ export default function HomeScreen() {
   const [receiptsCount, setReceiptsCount] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
   const [listsCount, setListsCount] = useState(0);
+  const [lists, setLists] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [recentReceipts, setRecentReceipts] = useState<any[]>([]);
+  const [showCreateListModal, setShowCreateListModal] = useState(false);
+  const [newListName, setNewListName] = useState('');
+  const [isCreatingList, setIsCreatingList] = useState(false);
+  const [showJoinListModal, setShowJoinListModal] = useState(false);
+  const [inviteCode, setInviteCode] = useState('');
+  const [isJoiningList, setIsJoiningList] = useState(false);
 
   // İstatistikleri yükle
   const loadStats = async () => {
@@ -55,6 +66,7 @@ export default function HomeScreen() {
         
         if (listsResponse.success && listsResponse.data) {
           setListsCount(listsResponse.count || listsResponse.data.length);
+          setLists(listsResponse.data.slice(0, 5));
         }
       } catch (error) {
         console.error('İstatistikler yüklenirken hata:', error);
@@ -86,6 +98,68 @@ export default function HomeScreen() {
   // Para formatı
   const formatCurrency = (amount: number) => {
     return amount.toFixed(2).replace('.', ',');
+  };
+
+  const handleCreateList = async () => {
+    if (!newListName.trim() || !user?.user_id) return;
+
+    try {
+      setIsCreatingList(true);
+      const response = await listService.createList({
+        name: newListName.trim(),
+        user_id: user.user_id,
+      });
+
+      if (response.success && response.data) {
+        setShowCreateListModal(false);
+        setNewListName('');
+        await loadStats();
+        router.push(`/list/${response.data.list_id}` as any);
+      }
+    } catch (error) {
+      console.error('Liste oluşturma hatası:', error);
+      Alert.alert('Hata', 'Liste oluşturulurken bir hata oluştu');
+    } finally {
+      setIsCreatingList(false);
+    }
+  };
+
+  const handleJoinList = async () => {
+    if (!inviteCode.trim() || !user?.user_id) return;
+
+    try {
+      setIsJoiningList(true);
+      const response = await shareService.joinWithCode({
+        invite_code: inviteCode.trim().toUpperCase(),
+        user_id: user.user_id,
+      });
+
+      if (response.success && response.data) {
+        setShowJoinListModal(false);
+        setInviteCode('');
+        await loadStats();
+        Alert.alert(
+          'Başarılı!',
+          `${response.data.list_name} listesine katıldınız`,
+          [
+            {
+              text: 'Listeyi Aç',
+              onPress: () => router.push(`/list/${response.data.list_id}` as any),
+            },
+            {
+              text: 'Tamam',
+              style: 'cancel',
+            },
+          ]
+        );
+      }
+    } catch (error: any) {
+      console.error('Listeye katılma hatası:', error);
+      const errorMessage = error?.response?.data?.error || 'Listeye katılırken bir hata oluştu';
+      Alert.alert('Hata', errorMessage);
+    } finally {
+      setIsJoiningList(false);
+    }
   };
 
   return (
@@ -167,7 +241,10 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Hızlı İşlemler</Text>
           
-          <TouchableOpacity style={styles.actionCard}>
+          <TouchableOpacity 
+            style={styles.actionCard}
+            onPress={() => setShowCreateListModal(true)}
+          >
             <View style={styles.actionIcon}>
               <Ionicons name="add-circle" size={28} color="#59B1B1" />
             </View>
@@ -212,6 +289,53 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Listelerim</Text>
+            {lists.length > 0 && (
+              <TouchableOpacity>
+                <Text style={styles.seeAllText}>Tümünü Gör</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {isLoading ? (
+            <View style={styles.emptyState}>
+              <ActivityIndicator size="large" color="#59B1B1" />
+            </View>
+          ) : lists.length > 0 ? (
+            <>
+              {lists.map((list) => (
+                <ShoppingListCard key={list.list_id} list={list} />
+              ))}
+            </>
+          ) : (
+            <View style={styles.emptyState}>
+              <Ionicons name="list-outline" size={64} color="#CCCCCC" />
+              <Text style={styles.emptyStateText}>Henüz liste yok</Text>
+              <Text style={styles.emptyStateSubtext}>
+                İlk alışveriş listenizi oluşturun
+              </Text>
+              <TouchableOpacity
+                style={styles.createListButton}
+                onPress={() => setShowCreateListModal(true)}
+              >
+                <Ionicons name="add-circle-outline" size={20} color="#FFFFFF" />
+                <Text style={styles.createListButtonText}>Liste Oluştur</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.createListButton, styles.joinListButton]}
+                onPress={() => setShowJoinListModal(true)}
+              >
+                <Ionicons name="enter-outline" size={20} color="#59B1B1" />
+                <Text style={[styles.createListButtonText, styles.joinListButtonText]}>
+                  Listeye Katıl
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        <View style={styles.section}>
           <Text style={styles.sectionTitle}>Son Aktiviteler</Text>
           {isLoading ? (
             <View style={styles.emptyState}>
@@ -249,6 +373,120 @@ export default function HomeScreen() {
           )}
         </View>
       </View>
+
+      <Modal
+        visible={showCreateListModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowCreateListModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Yeni Liste Oluştur</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowCreateListModal(false);
+                  setNewListName('');
+                }}
+              >
+                <Ionicons name="close" size={28} color="#2C2C2C" />
+              </TouchableOpacity>
+            </View>
+
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Liste adı girin..."
+              value={newListName}
+              onChangeText={setNewListName}
+              autoFocus
+              onSubmitEditing={handleCreateList}
+              returnKeyType="done"
+              editable={!isCreatingList}
+            />
+
+            <TouchableOpacity
+              style={[
+                styles.modalButton,
+                (!newListName.trim() || isCreatingList) && styles.modalButtonDisabled
+              ]}
+              onPress={handleCreateList}
+              disabled={!newListName.trim() || isCreatingList}
+            >
+              {isCreatingList ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text style={styles.modalButtonText}>Oluştur</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={showJoinListModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowJoinListModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Listeye Katıl</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowJoinListModal(false);
+                  setInviteCode('');
+                }}
+              >
+                <Ionicons name="close" size={28} color="#2C2C2C" />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalDescription}>
+              Davet kodunu girerek paylaşılan bir listeye katılabilirsiniz
+            </Text>
+
+            <TextInput
+              style={styles.inviteCodeInput}
+              placeholder="Davet kodunu girin (örn: ABC123)"
+              value={inviteCode}
+              onChangeText={(text) => setInviteCode(text.toUpperCase())}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              maxLength={6}
+              onSubmitEditing={handleJoinList}
+              returnKeyType="done"
+              editable={!isJoiningList}
+            />
+
+            <TouchableOpacity
+              style={[
+                styles.modalButton,
+                (inviteCode.length !== 6 || isJoiningList) && styles.modalButtonDisabled
+              ]}
+              onPress={handleJoinList}
+              disabled={inviteCode.length !== 6 || isJoiningList}
+            >
+              {isJoiningList ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <>
+                  <Ionicons name="checkmark-circle-outline" size={20} color="#FFFFFF" />
+                  <Text style={styles.modalButtonText}>Katıl</Text>
+                </>
+              )}
+            </TouchableOpacity>
+
+            <View style={styles.modalInfo}>
+              <Ionicons name="information-circle-outline" size={20} color="#7C7C7C" />
+              <Text style={styles.modalInfoText}>
+                Davet kodu, liste sahibi tarafından paylaşılmış olmalıdır
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -497,5 +735,129 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginTop: 0,
 
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  seeAllText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#59B1B1',
+  },
+  createListButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#59B1B1',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 16,
+    gap: 8,
+  },
+  createListButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  joinListButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#59B1B1',
+  },
+  joinListButtonText: {
+    color: '#59B1B1',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C2C2C',
+  },
+  modalInput: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: '#2C2C2C',
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: '#59B1B1',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 52,
+  },
+  modalButtonDisabled: {
+    backgroundColor: '#CCCCCC',
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginLeft: 8,
+  },
+  modalDescription: {
+    fontSize: 14,
+    color: '#7C7C7C',
+    marginBottom: 20,
+    lineHeight: 20,
+  },
+  inviteCodeInput: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C2C2C',
+    textAlign: 'center',
+    letterSpacing: 4,
+    marginBottom: 20,
+  },
+  modalInfo: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#FFF8E5',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 12,
+    gap: 8,
+  },
+  modalInfoText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#7C7C7C',
+    lineHeight: 18,
   },
 });

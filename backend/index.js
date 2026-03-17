@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./src/routes/authRoutes.js";
 import receiptRoutes from "./src/routes/receiptRoutes.js";
 import listRoutes from "./src/routes/listRoutes.js";
+import shareRoutes from "./src/routes/shareRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -23,5 +24,8 @@ app.use("/api/receipts", receiptRoutes);
 
 // List routes
 app.use("/api/lists", listRoutes);
+
+// Share routes
+app.use("/api/share", shareRoutes);
 
 app.listen(5000, () => console.log("Server running on port 5000"));

@@ -28,6 +28,8 @@ model User {
   expenses       Expense[]
   checkedItems   ListItem[]        @relation("CheckedByUser")
   sharedLists    ShoppingListShare[]
+  createdInvitations ListInvitation[] @relation("InvitationCreator")
+  usedInvitations    ListInvitation[] @relation("InvitationUser")
 }
 
 model ShoppingList {
@@ -42,6 +44,7 @@ model ShoppingList {
   receipts    Receipt[]
   accesses    UserListAccess[]
   sharedWith  ShoppingListShare[]
+  invitations ListInvitation[]
 }
 
 model UserListAccess {
@@ -137,6 +140,24 @@ model ShoppingListShare {
   list      ShoppingList @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
   user      User         @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   @@unique([list_id, user_id])
+}
+
+model ListInvitation {
+  invitation_id   Int        @id @default(autoincrement())
+  list_id         Int
+  invited_by      Int
+  invite_code     String     @unique
+  role            Role       @default(viewer)
+  expires_at      DateTime
+  is_used         Boolean    @default(false)
+  used_by         Int?
+  created_at      DateTime   @default(now())
+  used_at         DateTime?
+  max_uses        Int        @default(1)
+  uses_count      Int        @default(0)
+  list            ShoppingList @relation(fields: [list_id], references: [list_id], onDelete: Cascade)
+  inviter         User       @relation("InvitationCreator", fields: [invited_by], references: [user_id], onDelete: Cascade)
+  usedByUser      User?      @relation("InvitationUser", fields: [used_by], references: [user_id])
 }
 
 enum Role {

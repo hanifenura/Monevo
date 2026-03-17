@@ -214,6 +214,21 @@ exports.Prisma.ShoppingListShareScalarFieldEnum = {
   role: 'role'
 };
 
+exports.Prisma.ListInvitationScalarFieldEnum = {
+  invitation_id: 'invitation_id',
+  list_id: 'list_id',
+  invited_by: 'invited_by',
+  invite_code: 'invite_code',
+  role: 'role',
+  expires_at: 'expires_at',
+  is_used: 'is_used',
+  used_by: 'used_by',
+  created_at: 'created_at',
+  used_at: 'used_at',
+  max_uses: 'max_uses',
+  uses_count: 'uses_count'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -254,7 +269,8 @@ exports.Prisma.ModelName = {
   Receipt: 'Receipt',
   ReceiptItem: 'ReceiptItem',
   Expense: 'Expense',
-  ShoppingListShare: 'ShoppingListShare'
+  ShoppingListShare: 'ShoppingListShare',
+  ListInvitation: 'ListInvitation'
 };
 
 /**

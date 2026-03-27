@@ -96,12 +96,19 @@ export default function ListItemCard({ item, onToggleCheck, onPress, isEditMode,
       )}
 
       <View style={styles.content}>
-        <Text style={[
-          styles.itemName,
-          item.is_checked && styles.checkedText
-        ]}>
-          {item.name}
-        </Text>
+        <View style={styles.nameRow}>
+          <Text style={[
+            styles.itemName,
+            item.is_checked && styles.checkedText
+          ]}>
+            {item.name}
+          </Text>
+          {item.quantity > 1 && (
+            <View style={styles.quantityBadge}>
+              <Text style={styles.quantityText}>x{item.quantity}</Text>
+            </View>
+          )}
+        </View>
         
         <View style={styles.metaContainer}>
           {item.category && (
@@ -182,11 +189,27 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
   itemName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2C2C2C',
-    marginBottom: 4,
+  },
+  quantityBadge: {
+    backgroundColor: '#59B1B1',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  quantityText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   checkedText: {
     textDecorationLine: 'line-through',

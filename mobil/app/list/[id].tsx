@@ -60,6 +60,7 @@ export default function ListDetailScreen() {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [newItemName, setNewItemName] = useState('');
+  const [newItemQuantity, setNewItemQuantity] = useState('1');
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingItem, setEditingItem] = useState<ListItem | null>(null);
@@ -137,17 +138,24 @@ export default function ListDetailScreen() {
   const handleAddItem = async () => {
     if (!newItemName.trim() || !user?.user_id || !id) return;
 
+    const quantity = parseInt(newItemQuantity) || 1;
+    if (quantity < 1) {
+      Alert.alert('Hata', 'Miktar en az 1 olmalıdır');
+      return;
+    }
+
     try {
       setIsAddingItem(true);
       const response = await listService.addListItem(Number(id), {
         name: newItemName.trim(),
-        quantity: 1,
+        quantity: quantity,
         user_id: user.user_id,
       });
 
       if (response.success && response.data) {
         setItems(prevItems => [...prevItems, response.data]);
         setNewItemName('');
+        setNewItemQuantity('1');
       }
     } catch (error) {
       console.error('Öğe eklenirken hata:', error);
@@ -466,15 +474,50 @@ export default function ListDetailScreen() {
       </ScrollView>
 
       <View style={styles.addItemContainer}>
-        <TextInput
-          style={styles.addItemInput}
-          placeholder="Yeni öğe ekle..."
-          value={newItemName}
-          onChangeText={setNewItemName}
-          onSubmitEditing={handleAddItem}
-          returnKeyType="done"
-          editable={!isAddingItem}
-        />
+        <View style={styles.addItemInputsRow}>
+          <TextInput
+            style={styles.addItemInput}
+            placeholder="Yeni öğe ekle..."
+            value={newItemName}
+            onChangeText={setNewItemName}
+            onSubmitEditing={handleAddItem}
+            returnKeyType="done"
+            editable={!isAddingItem}
+          />
+          <View style={styles.quantityInputContainer}>
+            <TouchableOpacity 
+              style={styles.quantityButton}
+              onPress={() => {
+                const current = parseInt(newItemQuantity) || 1;
+                if (current > 1) setNewItemQuantity(String(current - 1));
+              }}
+              disabled={isAddingItem}
+            >
+              <Ionicons name="remove" size={20} color="#59B1B1" />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.quantityInput}
+              value={newItemQuantity}
+              onChangeText={(text) => {
+                const num = text.replace(/[^0-9]/g, '');
+                setNewItemQuantity(num || '1');
+              }}
+              keyboardType="numeric"
+              maxLength={3}
+              editable={!isAddingItem}
+            />
+            <TouchableOpacity 
+              style={styles.quantityButton}
+              onPress={() => {
+                const current = parseInt(newItemQuantity) || 1;
+                if (current < 999) setNewItemQuantity(String(current + 1));
+              }}
+              disabled={isAddingItem}
+            >
+              <Ionicons name="add" size={20} color="#59B1B1" />
+            </TouchableOpacity>
+          </View>
+        </View>
         <TouchableOpacity 
           style={[
             styles.addButton,
@@ -486,7 +529,7 @@ export default function ListDetailScreen() {
           {isAddingItem ? (
             <ActivityIndicator size="small" color="#FFFFFF" />
           ) : (
-            <Ionicons name="add" size={28} color="#FFFFFF" />
+            <Ionicons name="checkmark" size={28} color="#FFFFFF" />
           )}
         </TouchableOpacity>
       </View>
@@ -857,22 +900,48 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   addItemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     padding: 16,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
-  addItemInput: {
+  addItemInputsRow: {
     flex: 1,
-    height: 48,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 24,
-    paddingHorizontal: 20,
+    flexDirection: 'column',
+    gap: 8,
+  },
+  addItemInput: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     fontSize: 16,
-    color: '#2C2C2C',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  quantityInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0F9F9',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: '#59B1B1',
+    alignSelf: 'flex-start',
+  },
+  quantityButton: {
+    padding: 8,
+  },
+  quantityInput: {
+    width: 40,
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#59B1B1',
   },
   addButton: {
     width: 48,
@@ -961,7 +1030,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   menuModal: {
-    position: 'absolute',
+    position: 'absolute' as 'absolute',
     bottom: 0,
     left: 0,
     right: 0,

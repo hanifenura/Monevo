@@ -360,7 +360,7 @@ export default function ListMembersScreen() {
                 >
                   <View style={styles.roleOptionLeft}>
                     <View style={[styles.roleIcon, { backgroundColor: '#FFF5E5' }]}>
-                      <Ionicons name="crown" size={24} color="#FFA726" />
+                      <Ionicons name="star" size={24} color="#FFA726" />
                     </View>
                     <View style={styles.roleOptionContent}>
                       <Text style={[styles.roleOptionTitle, styles.roleOptionTitleOwner]}>

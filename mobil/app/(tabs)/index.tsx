@@ -292,7 +292,7 @@ export default function HomeScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Listelerim</Text>
             {lists.length > 0 && (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/lists/all' as any)}>
                 <Text style={styles.seeAllText}>Tümünü Gör</Text>
               </TouchableOpacity>
             )}

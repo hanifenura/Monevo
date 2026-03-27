@@ -76,6 +76,43 @@ export const authService = {
     }
   },
 
+  // Profil güncelle
+  updateProfile: async (userId: number, data: { name: string }) => {
+    try {
+      const response = await apiClient.put('/api/auth/profile', {
+        ...data,
+        user_id: userId,
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Kullanıcı istatistikleri
+  getUserStats: async (userId: number) => {
+    try {
+      const response = await apiClient.get(`/api/auth/stats?user_id=${userId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Şifre değiştirme
+  changePassword: async (userId: number, currentPassword: string, newPassword: string) => {
+    try {
+      const response = await apiClient.put('/api/auth/change-password', {
+        user_id: userId,
+        currentPassword,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   // Çıkış yap (local)
   logout: async () => {
     // Token'ı local storage'dan sil (AsyncStorage)

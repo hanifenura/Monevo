@@ -19,6 +19,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
 import { listService, shareService } from '@/services/api';
 import ListItemCard from '@/components/list/ListItemCard';
+import QRCode from 'react-native-qrcode-svg';
 
 interface ListItem {
   item_id: number;
@@ -72,6 +73,7 @@ export default function ListDetailScreen() {
   const [showMenuModal, setShowMenuModal] = useState(false);
   const [invitation, setInvitation] = useState<any>(null);
   const [isCreatingInvite, setIsCreatingInvite] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   useEffect(() => {
     if (id && user) {
@@ -300,6 +302,43 @@ export default function ListDetailScreen() {
     } catch (error) {
       console.error('Paylaşım hatası:', error);
     }
+  };
+
+  const handleDeleteList = async () => {
+    if (!user?.user_id || !id) return;
+
+    Alert.alert(
+      'Listeyi Sil',
+      'Bu listeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
+      [
+        {
+          text: 'İptal',
+          style: 'cancel',
+        },
+        {
+          text: 'Sil',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const response = await listService.deleteList(Number(id), user.user_id);
+              
+              if (response.success) {
+                Alert.alert('Başarılı', 'Liste silindi', [
+                  {
+                    text: 'Tamam',
+                    onPress: () => router.back(),
+                  },
+                ]);
+              }
+            } catch (error: any) {
+              console.error('Liste silme hatası:', error);
+              const errorMessage = error?.response?.data?.error || 'Liste silinirken bir hata oluştu';
+              Alert.alert('Hata', errorMessage);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleLeaveList = async () => {
@@ -652,14 +691,7 @@ export default function ListDetailScreen() {
                   style={[styles.menuItem, styles.menuItemDanger]}
                   onPress={() => {
                     setShowMenuModal(false);
-                    Alert.alert(
-                      'Listeyi Sil',
-                      'Bu listeyi silmek istediğinize emin misiniz?',
-                      [
-                        { text: 'İptal', style: 'cancel' },
-                        { text: 'Sil', style: 'destructive', onPress: () => {} },
-                      ]
-                    );
+                    setTimeout(() => handleDeleteList(), 300);
                   }}
                 >
                   <View style={[styles.menuIcon, { backgroundColor: '#FFE5E5' }]}>
@@ -748,7 +780,8 @@ export default function ListDetailScreen() {
                 <TouchableOpacity 
                   style={styles.shareOption}
                   onPress={() => {
-                    Alert.alert('Yakında', 'QR kod özelliği yakında eklenecek');
+                    setShowShareModal(false);
+                    setTimeout(() => setShowQRModal(true), 300);
                   }}
                 >
                   <View style={[styles.shareIcon, { backgroundColor: '#F3E5F5' }]}>
@@ -769,6 +802,65 @@ export default function ListDetailScreen() {
                     Bu kodu kullananlar listeye düzenleyici olarak eklenecek
                   </Text>
                 </View>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* QR Kod Modal */}
+      <Modal
+        visible={showQRModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowQRModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.qrModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>QR Kod ile Paylaş</Text>
+              <TouchableOpacity onPress={() => setShowQRModal(false)}>
+                <Ionicons name="close" size={28} color="#2C2C2C" />
+              </TouchableOpacity>
+            </View>
+
+            {invitation ? (
+              <View style={styles.qrContainer}>
+                <View style={styles.qrCodeWrapper}>
+                  <QRCode
+                    value={invitation.share_link || invitation.invite_code}
+                    size={250}
+                    backgroundColor="white"
+                    color="#2C2C2C"
+                  />
+                </View>
+
+                <Text style={styles.qrTitle}>{list?.name || 'Alışveriş Listesi'}</Text>
+                
+                <View style={styles.qrCodeBox}>
+                  <Text style={styles.qrCodeLabel}>Davet Kodu</Text>
+                  <Text style={styles.qrCodeText}>{invitation.invite_code}</Text>
+                </View>
+
+                <View style={styles.qrInfo}>
+                  <Ionicons name="information-circle-outline" size={20} color="#7C7C7C" />
+                  <Text style={styles.qrInfoText}>
+                    QR kodu taratarak veya davet kodunu girerek listeye katılabilirler
+                  </Text>
+                </View>
+
+                <Text style={styles.qrExpiry}>
+                  {new Date(invitation.expires_at).toLocaleDateString('tr-TR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })} tarihine kadar geçerli
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.qrLoadingContainer}>
+                <ActivityIndicator size="large" color="#59B1B1" />
+                <Text style={styles.qrLoadingText}>QR kod oluşturuluyor...</Text>
               </View>
             )}
           </View>
@@ -1172,5 +1264,89 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#7C7C7C',
     lineHeight: 18,
+  },
+  qrModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    width: '90%',
+    maxWidth: 400,
+    maxHeight: '85%',
+  },
+  qrContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  qrCodeWrapper: {
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+    marginBottom: 24,
+  },
+  qrTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C2C2C',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  qrCodeBox: {
+    backgroundColor: '#F0F9F9',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#59B1B1',
+    width: '100%',
+  },
+  qrCodeLabel: {
+    fontSize: 12,
+    color: '#7C7C7C',
+    marginBottom: 4,
+  },
+  qrCodeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#59B1B1',
+    letterSpacing: 2,
+  },
+  qrInfo: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#FFF8E5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    gap: 8,
+    width: '100%',
+  },
+  qrInfoText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#7C7C7C',
+    lineHeight: 18,
+  },
+  qrExpiry: {
+    fontSize: 12,
+    color: '#AAAAAA',
+    textAlign: 'center',
+  },
+  qrLoadingContainer: {
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  qrLoadingText: {
+    fontSize: 16,
+    color: '#7C7C7C',
+    marginTop: 16,
   },
 });

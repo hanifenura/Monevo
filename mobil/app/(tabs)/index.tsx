@@ -444,8 +444,25 @@ export default function HomeScreen() {
             </View>
 
             <Text style={styles.modalDescription}>
-              Davet kodunu girerek paylaşılan bir listeye katılabilirsiniz
+              Davet kodunu girerek veya QR kod tarayarak paylaşılan bir listeye katılabilirsiniz
             </Text>
+
+            <TouchableOpacity
+              style={styles.scanQRButton}
+              onPress={() => {
+                setShowJoinListModal(false);
+                router.push('/qr-scanner' as any);
+              }}
+            >
+              <Ionicons name="qr-code-outline" size={24} color="#FFFFFF" />
+              <Text style={styles.scanQRButtonText}>QR Kod Tara</Text>
+            </TouchableOpacity>
+
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>veya</Text>
+              <View style={styles.dividerLine} />
+            </View>
 
             <TextInput
               style={styles.inviteCodeInput}
@@ -859,5 +876,35 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#7C7C7C',
     lineHeight: 18,
+  },
+  scanQRButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#9C27B0',
+    borderRadius: 12,
+    padding: 16,
+    gap: 8,
+    marginBottom: 16,
+  },
+  scanQRButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E5E5E5',
+  },
+  dividerText: {
+    marginHorizontal: 12,
+    fontSize: 14,
+    color: '#7C7C7C',
   },
 });

@@ -50,9 +50,9 @@ export default function ListMembersScreen() {
 
       if (response.success && response.data) {
         // Üyeleri role göre sırala: owner -> editor -> viewer
-        const sortedMembers = response.data.sort((a, b) => {
-          const roleOrder = { owner: 0, editor: 1, viewer: 2 };
-          return roleOrder[a.role] - roleOrder[b.role];
+        const sortedMembers = response.data.sort((a: Member, b: Member) => {
+          const roleOrder: Record<string, number> = { owner: 0, editor: 1, viewer: 2 };
+          return (roleOrder[a.role] ?? 999) - (roleOrder[b.role] ?? 999);
         });
         setMembers(sortedMembers);
       }
@@ -101,9 +101,9 @@ export default function ListMembersScreen() {
           const updatedMembers = prevMembers.map(m =>
             m.user_id === selectedMember.user_id ? { ...m, role: newRole } : m
           );
-          const sortedMembers = updatedMembers.sort((a, b) => {
-            const roleOrder = { owner: 0, editor: 1, viewer: 2 };
-            return roleOrder[a.role] - roleOrder[b.role];
+          const sortedMembers = updatedMembers.sort((a: Member, b: Member) => {
+            const roleOrder: Record<string, number> = { owner: 0, editor: 1, viewer: 2 };
+            return (roleOrder[a.role] ?? 999) - (roleOrder[b.role] ?? 999);
           });
           return sortedMembers;
         });

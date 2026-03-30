@@ -190,7 +190,6 @@ export default function AllListsScreen() {
               <ShoppingListCard
                 key={list.list_id}
                 list={list}
-                onPress={() => router.push(`/list/${list.list_id}` as any)}
               />
             ))}
           </View>

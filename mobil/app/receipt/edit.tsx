@@ -42,9 +42,14 @@ export default function EditReceiptScreen() {
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(0);
 
-  // OCR sonucunu yükle
+  // OCR sonucunu veya mevcut fişi yükle
   useEffect(() => {
-    if (params.ocrData && typeof params.ocrData === 'string') {
+    // Eğer id varsa, mevcut fişi yükle
+    if (params.id && !params.ocrData) {
+      loadExistingReceipt();
+    }
+    // Eğer OCR verisi varsa, onu yükle
+    else if (params.ocrData && typeof params.ocrData === 'string') {
       try {
         const parsedData: ParsedReceiptData = JSON.parse(params.ocrData);
         console.log('📥 OCR verisi alındı:', parsedData);
@@ -106,7 +111,55 @@ export default function EditReceiptScreen() {
         Alert.alert('Hata', 'Fiş bilgileri yüklenemedi');
       }
     }
-  }, [params.ocrData]);
+  }, [params.ocrData, params.id]);
+
+  // Mevcut fişi backend'den yükle
+  const loadExistingReceipt = async () => {
+    if (!params.id || !user?.user_id) return;
+
+    try {
+      const response = await receiptService.getReceiptById(
+        Number(params.id),
+        user.user_id
+      );
+
+      if (response.success && response.data) {
+        const receipt = response.data;
+
+        // Mağaza adını ve tarihi set et
+        setStoreName(receipt.store_name);
+        setPurchaseDate(new Date(receipt.receipt_date));
+
+        // items'ı ReceiptProduct formatına dönüştür
+        const convertedProducts: ReceiptProduct[] = receipt.items.map((item: any, index: number) => ({
+          id: item.item_id ? String(item.item_id) : String(index),
+          name: item.productName,
+          quantity: Number(item.quantity) || 1,
+          price: Number(item.price) || 0,
+          unit: item.unit || 'adet',
+          pricePerUnit: item.pricePerUnit ? Number(item.pricePerUnit) : 0,
+          taxRate: item.taxRate ? Number(item.taxRate) : 0,
+        }));
+
+        setProducts(convertedProducts);
+
+        // Toplamları set et
+        const subtotalValue = Number(receipt.subtotal) || 0;
+        const taxValue = Number(receipt.tax_amount) || 0;
+        const totalValue = Number(receipt.total_amount) || 0;
+
+        setSubtotal(subtotalValue);
+        setTax(taxValue);
+        setTotal(totalValue);
+
+        console.log('✅ Mevcut fiş yüklendi:', receipt.receipt_id);
+      }
+    } catch (error) {
+      console.error('❌ Fiş yüklenirken hata:', error);
+      Alert.alert('Hata', 'Fiş bilgileri yüklenemedi');
+      router.back();
+    }
+  };
 
   // Handlers
   const handleDateChange = (date: Date) => {
@@ -181,7 +234,13 @@ export default function EditReceiptScreen() {
 
   const handleSuccessModalClose = () => {
     setShowSuccessModal(false);
-    router.back();
+    
+    // Eğer düzenleme modundaysa, detay sayfasına yönlendir
+    if (params.id) {
+      router.replace(`/receipt/${params.id}` as any);
+    } else {
+      router.back();
+    }
   };
 
   const handleSave = async () => {
@@ -222,8 +281,14 @@ export default function EditReceiptScreen() {
         user_id: user.user_id,
       };
 
-      // Backend'e kaydet
-      const response = await receiptService.saveReceipt(receiptData);
+      let response;
+
+      // Eğer id varsa güncelleme, yoksa yeni kayıt
+      if (params.id) {
+        response = await receiptService.updateReceipt(Number(params.id), receiptData);
+      } else {
+        response = await receiptService.saveReceipt(receiptData);
+      }
 
       if (response.success) {
         // Başarı modalını göster
@@ -258,7 +323,9 @@ export default function EditReceiptScreen() {
           <Ionicons name="arrow-back" size={24} color="#2C2C2C" />
         </TouchableOpacity>
         
-        <Text style={styles.headerTitle}>Fişi Gözden Geçir</Text>
+        <Text style={styles.headerTitle}>
+          {params.id ? 'Fişi Düzenle' : 'Fişi Gözden Geçir'}
+        </Text>
         
         <View style={styles.headerSpacer} />
       </View>
@@ -342,10 +409,14 @@ export default function EditReceiptScreen() {
           {isSaving ? (
             <View style={styles.savingContainer}>
               <ActivityIndicator color="#FFFFFF" />
-              <Text style={styles.saveButtonText}>Kaydediliyor...</Text>
+              <Text style={styles.saveButtonText}>
+                {params.id ? 'Güncelleniyor...' : 'Kaydediliyor...'}
+              </Text>
             </View>
           ) : (
-            <Text style={styles.saveButtonText}>Fişi Kaydet</Text>
+            <Text style={styles.saveButtonText}>
+              {params.id ? 'Fişi Güncelle' : 'Fişi Kaydet'}
+            </Text>
           )}
         </TouchableOpacity>
       </View>
@@ -371,7 +442,7 @@ export default function EditReceiptScreen() {
             </View>
             <Text style={styles.successTitle}>Başarılı!</Text>
             <Text style={styles.successMessage}>
-              Fişiniz başarıyla kaydedildi
+              {params.id ? 'Fişiniz başarıyla güncellendi' : 'Fişiniz başarıyla kaydedildi'}
             </Text>
             <View style={styles.successDetails}>
               <View style={styles.successDetailRow}>

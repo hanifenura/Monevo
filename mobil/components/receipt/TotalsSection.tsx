@@ -19,8 +19,11 @@ export const TotalsSection: React.FC<TotalsSectionProps> = ({
   onTotalChange,
 }) => {
   // Virgüllü formatlama
-  const formatValue = (value: number) => {
-    return value.toFixed(2).replace('.', ',');
+  const formatValue = (value: number | undefined | null) => {
+    if (value === undefined || value === null) return '0,00';
+    const num = typeof value === 'number' ? value : parseFloat(value);
+    if (isNaN(num)) return '0,00';
+    return num.toFixed(2).replace('.', ',');
   };
 
   return (

@@ -114,9 +114,24 @@ export const getUserReceipts = async (req, res) => {
       },
     });
 
+    // Decimal değerleri number'a dönüştür
+    const formattedReceipts = receipts.map(receipt => ({
+      ...receipt,
+      subtotal: receipt.subtotal ? parseFloat(receipt.subtotal.toString()) : null,
+      tax_amount: receipt.tax_amount ? parseFloat(receipt.tax_amount.toString()) : null,
+      total_amount: parseFloat(receipt.total_amount.toString()),
+      items: receipt.items.map(item => ({
+        ...item,
+        price: parseFloat(item.price.toString()),
+        quantity: parseFloat(item.quantity.toString()),
+        pricePerUnit: item.pricePerUnit ? parseFloat(item.pricePerUnit.toString()) : null,
+        taxRate: item.taxRate ? parseFloat(item.taxRate.toString()) : null,
+      })),
+    }));
+
     res.status(200).json({
       success: true,
-      data: receipts,
+      data: formattedReceipts,
     });
   } catch (error) {
     console.error("Fişleri getirme hatası:", error);
@@ -151,9 +166,24 @@ export const getReceiptById = async (req, res) => {
       });
     }
 
+    // Decimal değerleri number'a dönüştür
+    const formattedReceipt = {
+      ...receipt,
+      subtotal: receipt.subtotal ? parseFloat(receipt.subtotal.toString()) : null,
+      tax_amount: receipt.tax_amount ? parseFloat(receipt.tax_amount.toString()) : null,
+      total_amount: parseFloat(receipt.total_amount.toString()),
+      items: receipt.items.map(item => ({
+        ...item,
+        price: parseFloat(item.price.toString()),
+        quantity: parseFloat(item.quantity.toString()),
+        pricePerUnit: item.pricePerUnit ? parseFloat(item.pricePerUnit.toString()) : null,
+        taxRate: item.taxRate ? parseFloat(item.taxRate.toString()) : null,
+      })),
+    };
+
     res.status(200).json({
       success: true,
-      data: receipt,
+      data: formattedReceipt,
     });
   } catch (error) {
     console.error("Fiş getirme hatası:", error);

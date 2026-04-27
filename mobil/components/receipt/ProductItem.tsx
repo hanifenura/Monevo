@@ -29,15 +29,21 @@ export const ProductItem: React.FC<ProductItemProps> = ({
     );
   };
 
-  const formatPrice = (price: number) => {
-    return `₺${price.toFixed(2)}`;
+  const formatPrice = (price: number | undefined | null) => {
+    if (price === undefined || price === null) return '₺0,00';
+    const num = typeof price === 'number' ? price : parseFloat(price);
+    if (isNaN(num)) return '₺0,00';
+    return `₺${num.toFixed(2).replace('.', ',')}`;
   };
 
   const getQuantityText = () => {
+    const qty = product.quantity || 0;
+    const pricePerUnit = product.pricePerUnit || 0;
+    
     if (product.unit === 'kg') {
-      return `${product.quantity} Kg x ${formatPrice(product.pricePerUnit || 0)}/kg`;
+      return `${qty} Kg x ${formatPrice(pricePerUnit)}/kg`;
     }
-    return `${product.quantity} Adet x ${formatPrice(product.pricePerUnit || product.price)}`;
+    return `${qty} Adet x ${formatPrice(pricePerUnit || product.price)}`;
   };
 
   const getTaxText = () => {

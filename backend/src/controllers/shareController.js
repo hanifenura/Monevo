@@ -182,14 +182,26 @@ export const joinListWithCode = async (req, res) => {
     }
 
     // Kullanıcıyı listeye ekle
-    const access = await prisma.userListAccess.create({
-      data: {
-        user_id: parseInt(userId),
-        list_id: invitation.list_id,
-        role: invitation.role,
-        invited_by: invitation.invited_by,
-      },
-    });
+    let access;
+    try {
+      access = await prisma.userListAccess.create({
+        data: {
+          user_id: parseInt(userId),
+          list_id: invitation.list_id,
+          role: invitation.role,
+          invited_by: invitation.invited_by,
+        },
+      });
+    } catch (createError) {
+      // Unique constraint hatası - kullanıcı zaten listede
+      if (createError.code === 'P2002') {
+        return res.status(400).json({
+          success: false,
+          error: "Zaten bu listeye erişiminiz var",
+        });
+      }
+      throw createError; // Diğer hataları yukarı fırlat
+    }
 
     // Daveti güncelle
     await prisma.listInvitation.update({

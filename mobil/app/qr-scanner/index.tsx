@@ -46,9 +46,9 @@ export default function QRScannerScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.back()}
+            onPress={() => router.replace('/(tabs)' as any)}
           >
-            <Text style={styles.backButtonText}>Geri Dön</Text>
+            <Text style={styles.backButtonText}>Ana Sayfaya Dön</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -63,20 +63,36 @@ export default function QRScannerScreen() {
 
     try {
       // Link mi yoksa sadece kod mu kontrol et
-      let inviteCode = data;
+      let inviteCode = data.trim().toUpperCase();
+      
+      console.log('QR Data:', data);
       
       // Eğer URL ise, invite_code parametresini çıkar
-      if (data.includes('http') || data.includes('monevo')) {
+      if (data.includes('http') || data.includes('monevo://')) {
         try {
-          const url = new URL(data);
-          const codeFromUrl = url.searchParams.get('invite_code');
-          if (codeFromUrl) {
-            inviteCode = codeFromUrl;
+          // monevo:// protokolü için özel işlem
+          if (data.includes('monevo://list/join/')) {
+            const parts = data.split('monevo://list/join/');
+            if (parts.length > 1 && parts[1]) {
+              inviteCode = parts[1].trim().toUpperCase();
+            }
+          } else {
+            const url = new URL(data);
+            const codeFromUrl = url.searchParams.get('invite_code');
+            if (codeFromUrl) {
+              inviteCode = codeFromUrl.trim().toUpperCase();
+            }
           }
         } catch (e) {
           // URL parse edilemezse, direkt veriyi kullan
-          console.log('URL parse error, using raw data');
+          console.log('URL parse error, using raw data:', e);
         }
+      }
+
+      console.log('Extracted invite code:', inviteCode);
+
+      if (!inviteCode || inviteCode.length !== 6) {
+        throw new Error('Geçersiz QR kod formatı. Lütfen geçerli bir davet QR kodu tarayın.');
       }
 
       if (!user?.user_id) {
@@ -86,6 +102,7 @@ export default function QRScannerScreen() {
             onPress: () => {
               setScanned(false);
               setIsProcessing(false);
+              router.replace('/(tabs)' as any);
             },
           },
         ]);
@@ -116,29 +133,53 @@ export default function QRScannerScreen() {
       }
     } catch (error: any) {
       console.error('QR kod işleme hatası:', error);
+      console.log('Error response:', error?.response?.data);
+      console.log('Error message:', error?.message);
+      console.log('Error status:', error?.response?.status);
       
       let errorMessage = 'QR kod işlenirken bir hata oluştu';
+      let isAlreadyMember = false;
       
       if (error?.response?.data?.error) {
         errorMessage = error.response.data.error;
+        console.log('Backend error message:', errorMessage);
+        // Zaten üye kontrolü
+        if (errorMessage.includes('Zaten bu listeye erişiminiz var') || 
+            errorMessage.includes('Kendi listenize davet kullanamassınız')) {
+          isAlreadyMember = true;
+        }
       } else if (error?.message) {
         errorMessage = error.message;
       }
 
-      Alert.alert('Hata', errorMessage, [
-        {
-          text: 'Tekrar Dene',
-          onPress: () => {
-            setScanned(false);
-            setIsProcessing(false);
+      // Eğer kullanıcı zaten üye ise, farklı bir mesaj göster
+      if (isAlreadyMember) {
+        Alert.alert(
+          'Bilgi',
+          errorMessage,
+          [
+            {
+              text: 'Ana Sayfaya Dön',
+              onPress: () => router.replace('/(tabs)' as any),
+            },
+          ]
+        );
+      } else {
+        Alert.alert('Hata', errorMessage, [
+          {
+            text: 'Tekrar Dene',
+            onPress: () => {
+              setScanned(false);
+              setIsProcessing(false);
+            },
           },
-        },
-        {
-          text: 'Geri Dön',
-          onPress: () => router.back(),
-          style: 'cancel',
-        },
-      ]);
+          {
+            text: 'Ana Sayfaya Dön',
+            onPress: () => router.replace('/(tabs)' as any),
+            style: 'cancel',
+          },
+        ]);
+      }
     }
   };
 
@@ -157,7 +198,7 @@ export default function QRScannerScreen() {
           <View style={styles.header}>
             <TouchableOpacity
               style={styles.headerButton}
-              onPress={() => router.back()}
+              onPress={() => router.replace('/(tabs)' as any)}
             >
               <Ionicons name="close" size={32} color="#FFFFFF" />
             </TouchableOpacity>

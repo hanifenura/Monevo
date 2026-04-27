@@ -256,8 +256,7 @@ export default function ProfileScreen() {
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => {
-              // TODO: Navigate to receipts screen
-              Alert.alert('Yakında', 'Alışveriş fişleri özelliği yakında eklenecek');
+              router.push('/receipts' as any);
             }}
           >
             <View style={styles.menuItemLeft}>

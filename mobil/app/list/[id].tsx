@@ -828,7 +828,7 @@ export default function ListDetailScreen() {
               <View style={styles.qrContainer}>
                 <View style={styles.qrCodeWrapper}>
                   <QRCode
-                    value={invitation.share_link || invitation.invite_code}
+                    value={invitation.qr_data || invitation.share_link || `monevo://list/join/${invitation.invite_code}`}
                     size={250}
                     backgroundColor="white"
                     color="#2C2C2C"

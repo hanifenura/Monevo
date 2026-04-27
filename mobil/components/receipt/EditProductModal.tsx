@@ -35,8 +35,11 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
   const [customTaxRate, setCustomTaxRate] = useState('');
 
   // Sayıyı virgüllü formata çevir
-  const formatNumberWithComma = (value: number): string => {
-    return value.toString().replace('.', ',');
+  const formatNumberWithComma = (value: number | undefined | null): string => {
+    if (value === undefined || value === null) return '0';
+    const num = typeof value === 'number' ? value : parseFloat(value);
+    if (isNaN(num)) return '0';
+    return num.toString().replace('.', ',');
   };
 
   // Virgülü noktaya çevir
@@ -51,12 +54,14 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
 
   useEffect(() => {
     if (product) {
-      setName(product.name);
-      setQuantityType(product.unit);
+      setName(product.name || '');
+      setQuantityType(product.unit || 'adet');
       setQuantity(formatNumberWithComma(product.quantity));
       
       // Birim fiyatı göster (pricePerUnit varsa onu kullan, yoksa hesapla)
-      const unitPrice = product.pricePerUnit || (product.price / product.quantity);
+      const qty = product.quantity || 1;
+      const totalPrice = product.price || 0;
+      const unitPrice = product.pricePerUnit || (totalPrice / qty);
       setPrice(formatNumberWithComma(unitPrice));
       
       const rate = (product.taxRate || 20).toString();

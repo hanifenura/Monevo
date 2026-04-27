@@ -53,7 +53,8 @@ export default function HomeScreen() {
           
           // Toplam harcama (virgüllü formatta)
           const total = receipts.reduce((sum: number, receipt: any) => {
-            return sum + (parseFloat(receipt.total_amount) || 0);
+            const amount = parseFloat(receipt.total_amount);
+            return sum + (isNaN(amount) ? 0 : amount);
           }, 0);
           setTotalExpense(total);
           
@@ -96,8 +97,36 @@ export default function HomeScreen() {
   };
 
   // Para formatı
-  const formatCurrency = (amount: number) => {
-    return amount.toFixed(2).replace('.', ',');
+  const formatCurrency = (amount: number | string | undefined | null) => {
+    if (amount === undefined || amount === null || amount === '') return '0,00';
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+    if (isNaN(num)) return '0,00';
+    return num.toFixed(2).replace('.', ',');
+  };
+
+  // Tarih formatı
+  const formatDate = (dateString: string | undefined | null, options?: Intl.DateTimeFormatOptions) => {
+    if (!dateString) return 'Tarih yok';
+    
+    try {
+      const date = new Date(dateString);
+      
+      // Geçerli bir tarih mi kontrol et
+      if (isNaN(date.getTime())) {
+        return 'Tarih yok';
+      }
+      
+      const defaultOptions: Intl.DateTimeFormatOptions = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      };
+      
+      return date.toLocaleDateString('tr-TR', options || defaultOptions);
+    } catch (error) {
+      console.error('Tarih formatlama hatası:', error);
+      return 'Tarih yok';
+    }
   };
 
   const handleCreateList = async () => {
@@ -155,8 +184,23 @@ export default function HomeScreen() {
       }
     } catch (error: any) {
       console.error('Listeye katılma hatası:', error);
-      const errorMessage = error?.response?.data?.error || 'Listeye katılırken bir hata oluştu';
-      Alert.alert('Hata', errorMessage);
+      let errorMessage = error?.response?.data?.error || 'Listeye katılırken bir hata oluştu';
+      
+      // Eğer kullanıcı zaten üye ise, modal'ı kapat ve listeye git
+      if (errorMessage.includes('Zaten bu listeye erişiminiz var')) {
+        setShowJoinListModal(false);
+        setInviteCode('');
+        await loadStats();
+        Alert.alert('Bilgi', 'Bu listeye zaten erişiminiz var', [
+          {
+            text: 'Tamam',
+          },
+        ]);
+      } else if (errorMessage.includes('Kendi listenize davet kullanamassınız')) {
+        Alert.alert('Bilgi', errorMessage);
+      } else {
+        Alert.alert('Hata', errorMessage);
+      }
     } finally {
       setIsJoiningList(false);
     }
@@ -257,6 +301,22 @@ export default function HomeScreen() {
             <Ionicons name="chevron-forward" size={24} color="#CCCCCC" />
           </TouchableOpacity>
 
+          <TouchableOpacity 
+            style={styles.actionCard}
+            onPress={() => setShowJoinListModal(true)}
+          >
+            <View style={styles.actionIcon}>
+              <Ionicons name="enter-outline" size={28} color="#59B1B1" />
+            </View>
+            <View style={styles.actionContent}>
+              <Text style={styles.actionTitle}>Listeye Katıl</Text>
+              <Text style={styles.actionDescription}>
+                QR kod veya davet kodu ile katılın
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color="#CCCCCC" />
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.actionCard} 
            onPress={() => router.push("/camera")}>
             <View style={styles.actionIcon}>
@@ -344,22 +404,22 @@ export default function HomeScreen() {
           ) : recentReceipts.length > 0 ? (
             <>
               {recentReceipts.map((receipt) => (
-                <View key={receipt.receipt_id} style={styles.activityCard}>
+                <TouchableOpacity 
+                  key={receipt.receipt_id} 
+                  style={styles.activityCard}
+                  onPress={() => router.push(`/receipt/${receipt.receipt_id}` as any)}
+                >
                   <View style={styles.activityIcon}>
                     <Ionicons name="receipt" size={24} color="#59B1B1" />
                   </View>
                   <View style={styles.activityContent}>
                     <Text style={styles.activityTitle}>{receipt.store_name || 'Bilinmeyen Mağaza'}</Text>
                     <Text style={styles.activityDate}>
-                      {new Date(receipt.receipt_date).toLocaleDateString('tr-TR', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}
+                      {formatDate(receipt.receipt_date)}
                     </Text>
                   </View>
-                  <Text style={styles.activityAmount}>₺{formatCurrency(parseFloat(receipt.total_amount))}</Text>
-                </View>
+                  <Text style={styles.activityAmount}>₺{formatCurrency(receipt.total_amount)}</Text>
+                </TouchableOpacity>
               ))}
             </>
           ) : (
